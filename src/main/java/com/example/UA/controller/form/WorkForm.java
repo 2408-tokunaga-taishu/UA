@@ -1,6 +1,6 @@
 package com.example.UA.controller.form;
 
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.Setter;
 
