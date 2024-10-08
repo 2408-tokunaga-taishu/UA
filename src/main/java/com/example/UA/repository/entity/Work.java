@@ -22,7 +22,7 @@ public class Work {
     private Time workStart;
 
     @Column(name = "work_end")
-    private Time work_end;
+    private Time workEnd;
 
     @Column(name = "rest")
     private Time rest;
