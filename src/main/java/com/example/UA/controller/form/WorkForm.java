@@ -15,7 +15,7 @@ public class WorkForm {
 
     private Time workStart;
 
-    private Time work_end;
+    private Time workEnd;
 
     private Time rest;
 
