@@ -30,8 +30,7 @@ public class WorkController {
 
 //    新規追加初期画面表示
     @GetMapping("/newWork")
-    public ModelAndView newWork() {
-        WorkForm workForm = new WorkForm();
+    public ModelAndView newWork(@ModelAttribute("workForm") WorkForm workForm) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/newWork");
         mav.addObject("workForm", workForm);
@@ -53,7 +52,7 @@ public class WorkController {
             redirectAttributes.addFlashAttribute("workForm", workForm);
             mav.setViewName("redirect:/newWork");
         } else {
-            AccountForm account = (AccountForm) session.getAttribute("loginUser");
+            AccountForm account = (AccountForm) session.getAttribute("loginAccount");
             workService.saveWork(workForm, account);
             mav.setViewName("redirect:/");
         }
