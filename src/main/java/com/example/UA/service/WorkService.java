@@ -17,13 +17,42 @@ import java.time.format.DateTimeFormatter;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class WorkService {
-
     @Autowired
     WorkRepository workRepository;
+    /*
+     * 勤怠記録全取得
+     */
+    public List<WorkForm> findAllWorks() {
+        List<Work> results = new ArrayList<>();
+        results = workRepository.findAll();
+        List<WorkForm> works = setWorkForm(results);
+        return works;
+    }
 
-
+    private List<WorkForm> setWorkForm(List<Work> results) {
+        List<WorkForm> works = new ArrayList<>();
+        for (Work work : results) {
+            WorkForm workForm = new WorkForm();
+            workForm.setId(work.getId());
+            workForm.setWorkStart(work.getWorkStart());
+            workForm.setWorkEnd(work.getWorkEnd());
+            workForm.setRest(work.getRest());
+            workForm.setDate(work.getDate());
+            workForm.setDate(work.getRest());
+            workForm.setMemo(work.getMemo());
+            workForm.setStatus(work.getStatus());
+            workForm.setGroupId(work.getGroupId());
+            workForm.setAccountId(work.getAccountId());
+            works.add(workForm);
+        }
+        return works;
+    }
 
     public void saveWork(WorkForm workForm, AccountForm account) throws ParseException {
 //        StringからTimeに変換
@@ -38,7 +67,6 @@ public class WorkService {
         } else {
             workForm.setRest(Time.valueOf("00:00:00"));
         }
-
 //        日付のDate変換
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         workForm.setDate(sdf.parse(workForm.getStrDate()));
