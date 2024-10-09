@@ -1,5 +1,6 @@
 package com.example.UA.controller.form;
 
+import com.example.UA.Validation.CheckBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,10 @@ public class AccountForm {
 
     private int id;
 
+    @CheckBlank(message = "アカウントを入力してください")
     private String account;
 
+    @CheckBlank(message = "パスワードを入力してください")
     private String password;
 
     private String name;

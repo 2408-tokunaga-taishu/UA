@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ログイン</title>
 </head>
 <body>
-
+    <h1>ログイン</h1>
+    <!-- throwされたエラーに関しては上部に表示させる -->
+    <div class="errorMessage" th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <form th:action="@{/login}" th:method="post" th:object="${accountForm}">
+        アカウント名
+        <input th:field="*{account}" /><br />
+        <!-- Formでアノテーションを使用したエラーは各フォームのすぐ下に表示 -->
+        <div class="errorMessage" th:errors="*{account}" />
+        <br />
+        パスワード
+        <input th:field="*{password}" type="password" /><br />
+        <div class="errorMessage" th:errors="*{password}" />
+        <br />
+        <input type="submit" value="ログイン" />
+    </form>
 </body>
 </html>
