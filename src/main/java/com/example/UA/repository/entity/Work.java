@@ -33,7 +33,7 @@ public class Work {
     @Column(name = "memo")
     private String memo;
 
-    @Column(name = "status")
+    @Column(name = "status", insertable = false)
     private Integer status;
 
     @Column(name = "group_id")

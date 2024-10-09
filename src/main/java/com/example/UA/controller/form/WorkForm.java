@@ -1,6 +1,7 @@
 package com.example.UA.controller.form;
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,22 +21,22 @@ public class WorkForm {
 
     private Time rest;
 
-    private Time restStart;
-
-    private Time restEnd;
-
     private Date date;
 
+    @NotBlank(message = "日付を入力してください")
     private String strDate;
 
+    @NotBlank(message = "勤務開始時間を入力してください")
     private String strWorkStart;
 
+    @NotBlank(message = "勤務終了時間を入力してください")
     private String strWorkEnd;
+
 
     private String strRestStart;
 
-    private String strRestEnd;
 
+    private String strRestEnd;
 
     private String memo;
 
