@@ -21,51 +21,46 @@
             <th>操作</th>
         </tr>
         <div th:each="work : ${works}">
-            <tr>
-                <td>
-                    <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
-                </td>
-                <td>
-                    <div th:text="${work.workStart}"></div>
-                </td>
-                <td>
-                    <div th:text="${work.workEnd}"></div>
-                </td>
-                <td>
-                    <div th:text="${work.rest}"></div>
-                </td>
-                <td>
-                    <div th:text="${work.memo}"></div>
-                </td>
-                <td>
-                    <div th:if="${work.status == 0 || work.status == 3}">
-                        <form th:method="put" th:action="@{/{status}(status=${work.status})}">
-                            <input type="submit" value="申請">
+            <div th:if="loginAccount.id == ${work.accountId}">
+                <tr>
+                    <td>
+                        <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.workStart}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.workEnd}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.rest}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.memo}"></div>
+                    </td>
+                    <td>
+                        <div th:if="${work.status == 0 || work.status == 3}">
+                            <form th:method="put" th:action="@{/{id}(id=${work.id})}">
+                                <input type="submit" value="申請">
+                            </form>
+                        </div>
+                        <div th:if="${work.status == 1}">
+                            <input type="button" value="申請済み" disabled>
+                        </div>
+                        <div th:if="${work.status == 2}">
+                            <input type="button" value="承認済み" disabled>
+                        </div>
+                    </td>
+                    <td>
+                        <a th:href="@{/editWork/{id}(id=${work.id})}">
+                            <button class="edit-work" type="button">編集</button>
+                        </a>
+                        <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
+                            <input type="submit" name="delete-button" value="削除">
                         </form>
-                    </div>
-                    <div th:if="${work.status == 1}">
-                        <input type="button" value="申請済み" disabled>
-                    </div>
-                    <div th:if="${work.status == 2}">
-                        <input type="button" value="承認済み" disabled>
-                    </div>
-                </td>
-                <td>
-<!--                accountに応じてボタンの表示切り替え/ログインアカウントとworkのaccount_idが一致している時-->
-<!--                <div th:if="${loginAccount.id == work.accountId}"> -->
-                    <a th:href="@{/editWork/{id}(id=${work.id})}">
-                        <button class="edit-work" type="button">編集</button>
-                    </a>
-                    <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
-                        <input type="submit" name="delete-button" value="削除">
-                    </form>
-<!--                </div>-->
-                    <!-- ステータスに応じてボタンの表示切り替え/ログインアカウントとworkのuser_idが一致してない(承認者権限の人が見てるとき) -->
-<!--                <div th:if="${loginAccount.id != work.accountId}">-->
-<!--                    ログイン機能できてからここは実装する-->
-<!--                </div>-->
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            </div>
         </div>
     </table>
 </body>
