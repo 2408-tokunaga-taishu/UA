@@ -1,4 +1,4 @@
-package com.example.UA;
+package com.example.UA.controller;
 
 public class AccountController {
 }
