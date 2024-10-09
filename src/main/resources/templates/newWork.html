@@ -1,10 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>新規追加</title>
+    </head>
+    <body>
+        <h2>新規追加</h2>
+        <div class="work-form">
+            <form th:action="@{/addWork}" th:object="${workForm}" method="post">
+                <div class="new-date">日付
+                    <input type="date" th:field="*{strDate}"/>
+                </div>
+                <div class="new-start-time">勤務開始時間
+                    <input type="time" th:field="*{strWorkStart}">
+                </div>
+                <div class="new-end-time">勤務終了時間
+                    <input type="time" th:field="*{strWorkEnd}">
+                </div>
+                <div class="new-rest-start">休憩開始時間
+                    <input type="time" th:field="*{strRestStart}">
+                </div>
+                <div class="new-rest-end">休憩終了時間
+                    <input type="time" th:field="*{strRestEnd}">
+                </div>
+                <div class="memo">メモ
+                    <input type="text" th:field="*{memo}">
+                </div>
+                <input type="submit" value="追加">
+            </form>
+        </div>
+    </body>
 </html>
