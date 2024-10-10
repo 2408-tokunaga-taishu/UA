@@ -93,12 +93,10 @@ public class AccountController {
     public ModelAndView accountManage() {
         ModelAndView mav = new ModelAndView();
         List<AccountForm> accounts = accountService.findAllAccount();
-//        List<GroupForm> groups = groupService.findAllgroups();
         mav.setViewName("/accountManage");
         mav.addObject("accounts", accounts);
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
         mav.addObject("loginAccount", loginAccount);
-//        mav.addObject("groups", groups);
         return mav;
     }
 
