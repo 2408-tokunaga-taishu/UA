@@ -6,9 +6,16 @@
 </head>
 <body>
     <h2>勤怠管理システム</h2>
-        <a th:href="@{/newWork}">
-              <input type="button" value="新規追加">
-        </a>
+    <a th:href="@{/newWork}">
+          <input type="button" value="新規追加">
+    </a>
+    <form th:method="post" th:action="@{/previousMonth}">
+        <input type="submit" name="previous-month" value="前月">
+    </form>
+    <th:block th:text="${displayMonth} + '月'"></th:block>
+    <form th:method="post" th:action="@{/nextMonth}">
+        <input type="submit" name="next-month" value="次月">
+    </form>
     <table class="works">
         <tr class="works-table-title">
             <th>日付</th>
@@ -20,6 +27,7 @@
             <th>操作</th>
         </tr>
         <div th:each="work : ${works}">
+            <div th:if="${work.accountId == loginAccount.id}">
             <tr>
                 <td>
                     <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
@@ -38,7 +46,7 @@
                 </td>
                 <td>
                     <div th:if="${work.status == 0 || work.status == 3}">
-                        <form th:method="put" th:action="@{/{status}(status=${work.status})}">
+                        <form th:method="put" th:action="@{/{id}(id=${work.id})}">
                             <input type="submit" value="申請">
                         </form>
                     </div>
@@ -50,21 +58,15 @@
                     </div>
                 </td>
                 <td>
-<!--                accountに応じてボタンの表示切り替え/ログインアカウントとworkのaccount_idが一致している時-->
-<!--                <div th:if="${loginAccount.id == work.accountId}"> -->
                     <a th:href="@{/editWork/{id}(id=${work.id})}">
                         <button class="edit-work" type="button">編集</button>
                     </a>
                     <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
                         <input type="submit" name="delete-button" value="削除">
                     </form>
-<!--                </div>-->
-                    <!-- ステータスに応じてボタンの表示切り替え/ログインアカウントとworkのuser_idが一致してない(承認者権限の人が見てるとき) -->
-<!--                <div th:if="${loginAccount.id != work.accountId}">-->
-<!--                    ログイン機能できてからここは実装する-->
-<!--                </div>-->
                 </td>
             </tr>
+            </div>
         </div>
     </table>
 </body>
