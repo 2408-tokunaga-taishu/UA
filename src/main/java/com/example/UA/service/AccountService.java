@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -64,5 +65,36 @@ public class AccountService {
             accounts.add(account);
         }
         return accounts;
+    }
+
+    /*
+     * 稼働状況を更新するアカウントを取得
+     */
+    public AccountForm findAccount(int id) {
+        Account result = accountRepository.findById(id).orElse(null);
+        AccountForm account = setAccountForm(result);
+        return account;
+    }
+
+    /*
+     * アカウントの登録・保存処理
+     */
+    public void saveAccount(AccountForm accountForm) {
+        Account saveAccount = setAccountEntity(accountForm);
+        accountRepository.save(saveAccount);
+    }
+
+    private Account setAccountEntity(AccountForm accountForm) {
+        Account account = new Account();
+        account.setId(accountForm.getId());
+        account.setPassword(accountForm.getPassword());
+        account.setAccount(accountForm.getAccount());
+        account.setName(accountForm.getName());
+        account.setGroupId(accountForm.getGroupId());
+        account.setIsStopped(accountForm.getIsStopped());
+        account.setSuperVisor(accountForm.getSuperVisor());
+        account.setAdmin(accountForm.getAdmin());
+        account.setUpdatedDate(new Date());
+        return account;
     }
 }

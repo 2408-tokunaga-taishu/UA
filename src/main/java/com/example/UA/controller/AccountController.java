@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -102,5 +100,23 @@ public class AccountController {
         mav.addObject("loginAccount", loginAccount);
 //        mav.addObject("groups", groups);
         return mav;
+    }
+
+    /*
+     * アカウント復活・停止機能
+     */
+    @PutMapping("/{id}")
+    public ModelAndView changeIsStopped(@PathVariable("id") int id) {
+        // 対象のアカウントを取得
+        AccountForm accountData = accountService.findAccount(id);
+        // アカウントのisStoppedの値を変更させる
+        if (accountData.getIsStopped() == 1) {
+            accountData.setIsStopped(0);
+        } else {
+            accountData.setIsStopped(1);
+        }
+        // 値を変更させたらデータを保存させる
+        accountService.saveAccount(accountData);
+        return new ModelAndView("redirect:/accountManage");
     }
 }

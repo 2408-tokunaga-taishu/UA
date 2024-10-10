@@ -23,37 +23,48 @@
             <th>承認者権限</th>
             <th>管理者権限</th>
         </tr>
-        <div th:each="accounts : ${accounts}">
+        <div th:each="a : ${accounts}">
             <tr>
                 <td>
-                    <p th:text="${accounts.account}" />
+                    <p th:text="${a.account}" />
                 </td>
                 <td>
-                    <p th:text="${accounts.name}" />
+                    <p th:text="${a.name}" />
                 </td>
                 <td>
-                    <p th:text="${accounts.groupId}" />
+                    <p th:text="${a.groupId}" />
                 </td>
                 <td>
-                    <th:block th:switch="${accounts.isStopped}">
+                    <th:block th:switch="${a.isStopped}">
                         <span th:case=0 th:text="稼働中" />
                         <span th:case=1 th:text="停止中" />
                     </th:block>
                 </td>
                 <td>
-                    <th:block th:switch="${accounts.superVisor}">
+                    <th:block th:switch="${a.superVisor}">
                         <span th:case=0 th:text="無" />
                         <span th:case=1 th:text="有" />
                     </th:block>
                 </td>
                 <td>
-                    <th:block th:switch="${accounts.admin}">
+                    <th:block th:switch="${a.admin}">
                         <span th:case=0 th:text="無" />
                         <span th:case=1 th:test="有" />
                     </th:block>
                 </td>
                 <td>
-                    
+                    <div th:if="${loginAccount.id != a.id}">
+                        <div th:if="${a.isStopped == 0}">
+                            <form th:method="put" th:action="@{/{id}(id=${a.id})}">
+                                <input type="submit" value="停止" name="isStopped-button" class="off">
+                            </form>
+                        </div>
+                        <div th:if="${a.isStopped == 1}">
+                            <form th:method="put" th:action="@{/{id}(id=${a.id})}">
+                                <input type="submit" value="復活" name="isStopped-button" class="on">
+                            </form>
+                        </div>
+                    </div>
                 </td>
             </tr>
         </div>
