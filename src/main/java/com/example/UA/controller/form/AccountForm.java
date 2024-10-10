@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 public class AccountForm {
 
-    private int id;
+    private Integer id;
 
     @CheckBlank(message = "アカウントを入力してください")
     private String account;

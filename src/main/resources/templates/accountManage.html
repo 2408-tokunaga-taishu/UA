@@ -1,10 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>アカウント管理画面</title>
 </head>
 <body>
-
+    <h2>アカウント管理画面</h2>
+    <a th:href="@{/newAccount}">
+        <button class="new-account" type="button">アカウント新規作成</button>
+    </a>
+    <div>
+        <a th:href="@{/top}">
+            <input type="button" value="戻る">
+        </a>
+    </div><br>
+    <table class="accounts">
+        <tr class="accountsTableTitle">
+            <th>アカウント名</th>
+            <th>氏名</th>
+            <th>所属グループ</th>
+            <th>アカウント稼働状態</th>
+            <th>承認者権限</th>
+            <th>管理者権限</th>
+        </tr>
+        <div th:each="accounts : ${accounts}">
+            <tr>
+                <td>
+                    <p th:text="${accounts.account}" />
+                </td>
+                <td>
+                    <p th:text="${accounts.name}" />
+                </td>
+                <td>
+                    <p th:text="${accounts.groupId}" />
+                </td>
+                <td>
+                    <th:block th:switch="${accounts.isStopped}">
+                        <span th:case=0 th:text="稼働中" />
+                        <span th:case=1 th:text="停止中" />
+                    </th:block>
+                </td>
+                <td>
+                    <th:block th:switch="${accounts.superVisor}">
+                        <span th:case=0 th:text="無" />
+                        <span th:case=1 th:text="有" />
+                    </th:block>
+                </td>
+                <td>
+                    <th:block th:switch="${accounts.admin}">
+                        <span th:case=0 th:text="無" />
+                        <span th:case=1 th:test="有" />
+                    </th:block>
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+        </div>
+    </table>
 </body>
 </html>
