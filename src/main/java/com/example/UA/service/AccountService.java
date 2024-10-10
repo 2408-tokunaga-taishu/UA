@@ -6,6 +6,9 @@ import com.example.UA.repository.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AccountService {
 
@@ -37,5 +40,29 @@ public class AccountService {
         account.setSuperVisor(result.getSuperVisor());
         account.setAdmin(result.getAdmin());
         return account;
+    }
+
+    public List<AccountForm> findAllAccount() {
+        List<Account> results = accountRepository.findAll();
+        List<AccountForm> accounts = setAccountForm(results);
+        return accounts;
+    }
+
+    private List<AccountForm> setAccountForm(List<Account> results) {
+        List<AccountForm> accounts = new ArrayList<>();
+
+        for (int i = 0; i < results.size(); i++) {
+            AccountForm account = new AccountForm();
+            Account result = results.get(i);
+            account.setId(result.getId());
+            account.setAccount(result.getAccount());
+            account.setName(result.getName());
+            account.setGroupId(result.getGroupId());
+            account.setIsStopped(result.getIsStopped());
+            account.setSuperVisor(result.getSuperVisor());
+            account.setAdmin(result.getAdmin());
+            accounts.add(account);
+        }
+        return accounts;
     }
 }

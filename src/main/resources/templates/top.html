@@ -9,6 +9,11 @@
     <a th:href="@{/newWork}">
           <input type="button" value="新規追加">
     </a>
+    <div>
+        <a th:href="@{/logout}">
+            <input type="button" value="ログアウト">
+        </a>
+    </div>
     <form th:method="post" th:action="@{/previousMonth}">
         <input type="submit" name="previous-month" value="前月">
     </form>

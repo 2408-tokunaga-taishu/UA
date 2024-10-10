@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class AccountController {
     @Autowired
@@ -70,6 +72,35 @@ public class AccountController {
         session.setAttribute("loginAccount", accountData);
         // topにリダイレクト
         mav.setViewName("redirect:/top");
+        return mav;
+    }
+
+    /*
+     * ログアウト処理
+     */
+    @GetMapping("/logout")
+    public ModelAndView logout() {
+        ModelAndView mav = new ModelAndView();
+        session.removeAttribute("loginAccount");
+        AccountForm accountForm = new AccountForm();
+        mav.setViewName("/login");
+        mav.addObject("accountForm", accountForm);
+        return mav;
+    }
+
+    /*
+     * アカウント管理画面表示
+     */
+    @GetMapping("/accountManage")
+    public ModelAndView accountManage() {
+        ModelAndView mav = new ModelAndView();
+        List<AccountForm> accounts = accountService.findAllAccount();
+//        List<GroupForm> groups = groupService.findAllgroups();
+        mav.setViewName("/accountManage");
+        mav.addObject("accounts", accounts);
+        AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        mav.addObject("loginAccount", loginAccount);
+//        mav.addObject("groups", groups);
         return mav;
     }
 }
