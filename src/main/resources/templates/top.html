@@ -10,6 +10,13 @@
         <a th:href="/newWork">
               <input type="button" value="新規追加">
             </a>-->
+    <form th:method="post" th:action="@{/previousMonth}">
+        <input type="submit" name="previous-month" value="前月">
+    </form>
+    <th:block th:text="${displayMonth} + '月'"></th:block>
+    <form th:method="post" th:action="@{/nextMonth}">
+        <input type="submit" name="next-month" value="次月">
+    </form>
     <table class="works">
         <tr class="works-table-title">
             <th>日付</th>
