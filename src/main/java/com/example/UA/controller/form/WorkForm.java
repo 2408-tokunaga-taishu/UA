@@ -29,6 +29,10 @@ public class WorkForm {
 
     private Time rest;
 
+    private Time restStart;
+
+    private Time restEnd;
+
     private Date date;
 
     @NotBlank(message = "日付を入力してください")
@@ -61,6 +65,24 @@ public class WorkForm {
             LocalTime endTime = LocalTime.parse(strRestEnd, DateTimeFormatter.ofPattern("HH:mm"));
             Duration duration = Duration.between(startTime, endTime);
             return duration.getSeconds() > 0;
+        }
+    }
+
+    @AssertTrue(message = "休憩開始時刻のみ入力されています")
+    public boolean isRestStart() {
+        if (!isBlank(strRestStart) && isBlank(strRestEnd)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @AssertTrue(message = "休憩終了時刻のみ入力されています")
+    public boolean isRestEnd() {
+        if (isBlank(strRestStart) && !isBlank(strRestEnd)) {
+            return false;
+        } else {
+            return true;
         }
     }
 

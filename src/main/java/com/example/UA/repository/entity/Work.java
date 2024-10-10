@@ -27,6 +27,12 @@ public class Work {
     @Column(name = "rest")
     private Time rest;
 
+    @Column(name = "rest_start")
+    private Time restStart;
+
+    @Column(name = "rest_end")
+    private Time restEnd;
+
     @Column(name = "date")
     private Date date;
 
