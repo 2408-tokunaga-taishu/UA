@@ -43,6 +43,9 @@ public class AccountService {
         return account;
     }
 
+    /*
+     * アカウント管理画面で表示する全アカウント取得
+     */
     public List<AccountForm> findAllAccount() {
         List<Account> results = accountRepository.findAll();
         List<AccountForm> accounts = setAccountForm(results);
@@ -62,6 +65,7 @@ public class AccountService {
             account.setIsStopped(result.getIsStopped());
             account.setSuperVisor(result.getSuperVisor());
             account.setAdmin(result.getAdmin());
+            account.setGroupName(result.getGroup().getName());
             accounts.add(account);
         }
         return accounts;

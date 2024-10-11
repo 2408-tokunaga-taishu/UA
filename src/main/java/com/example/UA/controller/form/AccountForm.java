@@ -31,4 +31,6 @@ public class AccountForm {
     private Date createdDate;
 
     private Date updatedDate;
+
+    private String groupName;
 }

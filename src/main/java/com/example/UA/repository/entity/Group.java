@@ -25,6 +25,4 @@ public class Group {
 
     @Column(name="updated_date", insertable = false)
     private Date updatedDate;
-
-    @OneToMany
 }
