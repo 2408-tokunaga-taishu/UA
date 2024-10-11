@@ -8,10 +8,12 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -129,6 +131,38 @@ public class AccountController {
         List<GroupForm> groups = accountService.findAllGroups();
         mav.addObject("groups", groups);
         mav.setViewName("/newAccount");
+        return mav;
+    }
+
+    /*
+     * アカウント登録処理
+     */
+    @PostMapping("/newAccount")
+    public ModelAndView newAccount(@ModelAttribute("accountForm") @Validated AccountForm accountForm,
+                                   BindingResult result) {
+        ModelAndView mav = new ModelAndView();
+        List<String> errorMessages = new ArrayList<>();
+        // 0-1の切り替えフラグのカラムに値を追加
+        accountForm.setIsStopped(0);
+        accountForm.setSuperVisor(0);
+        accountForm.setAdmin(0);
+        // エラー処理
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+        }
+        if (errorMessages.size() > 0) {
+            mav.addObject("errorMessages", errorMessages);
+            mav.addObject("accountForm", accountForm);
+            mav.addObject("groups", accountService.findAllGroups());
+            mav.setViewName("/newAccount");
+        } else {
+            // パスワード暗号化
+            accountForm.setPassword(CipherUtil.encrypt(accountForm.getPassword()));
+            accountService.saveAccount(accountForm);
+            mav.setViewName("redirect:/accountManage");
+        }
         return mav;
     }
 }
