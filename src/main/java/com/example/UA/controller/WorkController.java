@@ -87,4 +87,22 @@ public class WorkController {
         }
         return mav;
     }
+
+//    勤怠の申請処理
+    @PutMapping("/request/{id}")
+    public ModelAndView requestWork(@PathVariable int id) {
+        ModelAndView mav = new ModelAndView();
+        workService.saveStatus(id);
+        mav.setViewName("redirect:/");
+        return mav;
+    }
+
+//    勤怠の削除処理
+    @DeleteMapping("/deleteWork/{id}")
+    public ModelAndView deleteWork(@PathVariable int id) {
+        ModelAndView mav = new ModelAndView();
+        workService.deleteWork(id);
+        mav.setViewName("redirect:/");
+        return mav;
+    }
 }

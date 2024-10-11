@@ -159,7 +159,7 @@ public class WorkService {
             workForm.setRestEnd(Time.valueOf(workForm.getStrRestEnd() + ":00"));
         }
 //        休憩時間の算出
-        if (!isBlank(workForm.getStrRestStart()) && !isBlank(workForm.getStrRestEnd())){
+        if (!isBlank(workForm.getStrRestStart()) && !isBlank(workForm.getStrRestEnd())) {
             LocalTime startTime = LocalTime.parse(workForm.getStrRestStart(), DateTimeFormatter.ofPattern("HH:mm"));
             LocalTime endTime = LocalTime.parse(workForm.getStrRestEnd(), DateTimeFormatter.ofPattern("HH:mm"));
             Duration duration = Duration.between(startTime, endTime);
@@ -178,5 +178,20 @@ public class WorkService {
         workForm.setUpdatedDate(new Date());
         Work work = setWork(workForm);
         workRepository.save(work);
+    }
+//        申請status変更
+    public void saveStatus(int id) {
+        Date Date = new Date();
+        workRepository.saveStatus(id, Date);
+    }
+//        勤怠削除処理
+    public void deleteWork(int id) {
+        workRepository.deleteById(id);
+    }
+//        申請済みの同グループの勤怠取得
+    public List<WorkForm> findGroupWork(Integer groupId) {
+        List<Work> results = workRepository.findBygroupIdBystatus(groupId);
+        List<WorkForm> workForms = setWorkForm(results);
+        return workForms;
     }
 }
