@@ -1,8 +1,11 @@
 package com.example.UA.service;
 
 import com.example.UA.controller.form.AccountForm;
+import com.example.UA.controller.form.GroupForm;
 import com.example.UA.repository.AccountRepository;
+import com.example.UA.repository.GroupRepository;
 import com.example.UA.repository.entity.Account;
+import com.example.UA.repository.entity.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,10 @@ public class AccountService {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    GroupRepository groupRepository;
+
     /*
      * ログインアカウント情報取得(ログイン処理)
      */
@@ -100,5 +107,26 @@ public class AccountService {
         account.setAdmin(accountForm.getAdmin());
         account.setUpdatedDate(new Date());
         return account;
+    }
+
+    /*
+     * アカウント登録と編集時に現在あるグループを取得
+     */
+    public List<GroupForm> findAllGroups() {
+        List<Group> results = groupRepository.findAll();
+        List<GroupForm> groups = setGroupForm(results);
+        return groups;
+    }
+
+    private List<GroupForm> setGroupForm(List<Group> results) {
+        List<GroupForm> groups = new ArrayList<>();
+        for (int i = 0; i <results.size(); i++) {
+            GroupForm group = new GroupForm();
+            Group result = results.get(i);
+            group.setId(result.getId());
+            group.setName(result.getName());
+            groups.add(group);
+        }
+        return groups;
     }
 }

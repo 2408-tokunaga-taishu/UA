@@ -33,4 +33,6 @@ public class AccountForm {
     private Date updatedDate;
 
     private String groupName;
+
+    private String passCheck;
 }

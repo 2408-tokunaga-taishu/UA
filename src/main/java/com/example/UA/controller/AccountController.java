@@ -1,6 +1,7 @@
 package com.example.UA.controller;
 
 import com.example.UA.controller.form.AccountForm;
+import com.example.UA.controller.form.GroupForm;
 import com.example.UA.service.AccountService;
 import com.example.UA.utils.CipherUtil;
 import jakarta.servlet.http.HttpSession;
@@ -116,5 +117,18 @@ public class AccountController {
         // 値を変更させたらデータを保存させる
         accountService.saveAccount(accountData);
         return new ModelAndView("redirect:/accountManage");
+    }
+
+    /*
+     * アカウント登録画面表示
+     */
+    @GetMapping("/newAccount")
+    public ModelAndView newAccount(@ModelAttribute("accountForm") AccountForm accountForm) {
+        ModelAndView mav = new ModelAndView();
+        // selectタグで表示するグループ名を取得
+        List<GroupForm> groups = accountService.findAllGroups();
+        mav.addObject("groups", groups);
+        mav.setViewName("/newAccount");
+        return mav;
     }
 }
