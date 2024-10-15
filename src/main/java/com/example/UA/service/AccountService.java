@@ -88,11 +88,25 @@ public class AccountService {
     }
 
     /*
-     * アカウントの登録・保存処理
+     * アカウントの登録処理
      */
     public void saveAccount(AccountForm accountForm) {
         Account saveAccount = setAccountEntity(accountForm);
         accountRepository.save(saveAccount);
+    }
+    /*
+     * アカウントの更新処理
+     */
+    public void updateAccount(AccountForm accountForm) throws Exception {
+        // アカウント名重複チェック
+        Account account = accountRepository.findByAccount(accountForm.getAccount());
+        if (account != null) {
+            if (account.getId() != accountForm.getId()) {
+                throw new Exception("アカウントが重複しています");
+            }
+        }
+        Account updateAccount = setAccountEntity(accountForm);
+        accountRepository.save(updateAccount);
     }
 
     private Account setAccountEntity(AccountForm accountForm) {

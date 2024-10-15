@@ -209,7 +209,7 @@ public class AccountController {
      */
     @PutMapping("/editAccount/{id}")
     public ModelAndView editAccount(@PathVariable int id, @Validated({AccountForm.editAccount.class}) AccountForm accountForm,
-                                 BindingResult result) throws Exception {
+                                 BindingResult result) {
         ModelAndView mav = new ModelAndView();
         List<String> errorMessages = new ArrayList<>();
         // エラー処理
@@ -220,7 +220,7 @@ public class AccountController {
         }
         if (errorMessages.isEmpty()) {
             try {
-                accountService.saveAccount(accountForm);
+                accountService.updateAccount(accountForm);
                 mav.setViewName("redirect:/accountManage");
                 return mav;
             } catch (Exception e) {

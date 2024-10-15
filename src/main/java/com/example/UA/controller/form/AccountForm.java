@@ -21,7 +21,7 @@ public class AccountForm {
 
     private int id;
 
-    @CheckBlank(message = "アカウントを入力してください", groups = {login.class, newAccount.class})
+    @CheckBlank(message = "アカウントを入力してください", groups = {login.class, newAccount.class, editAccount.class})
     @Unique(groups = {newAccount.class})
     private String account;
 
@@ -56,7 +56,7 @@ public class AccountForm {
     }
 
 
-    @CheckBlank(message = "氏名を入力してください", groups = {newAccount.class})
+    @CheckBlank(message = "氏名を入力してください", groups = {newAccount.class, editAccount.class})
     private String name;
 
     @AssertTrue(message = "氏名は10文字以下で入力してください", groups = {newAccount.class, editAccount.class})
@@ -68,7 +68,7 @@ public class AccountForm {
         }
     }
 
-    @NotNull(message = "所属グループを選択してください", groups = {newAccount.class})
+    @NotNull(message = "所属グループを選択してください", groups = {newAccount.class, editAccount.class})
     private Integer groupId;
 
     private Integer isStopped;
