@@ -203,4 +203,40 @@ public class AccountController {
         redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
         return new ModelAndView("redirect:/accountManage");
     }
+
+    /*
+     * アカウント編集処理
+     */
+    @PutMapping("/editAccount/{id}")
+    public ModelAndView editAccount(@PathVariable int id, @Validated({AccountForm.editAccount.class}) AccountForm accountForm,
+                                 BindingResult result) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        List<String> errorMessages = new ArrayList<>();
+        // エラー処理
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+        }
+        if (errorMessages.isEmpty()) {
+            try {
+                accountService.saveAccount(accountForm);
+                mav.setViewName("redirect:/accountManage");
+                return mav;
+            } catch (Exception e) {
+                errorMessages.add(e.getMessage());
+            }
+        }
+        if (errorMessages.size() > 0) {
+            mav.addObject("errorMessages", errorMessages);
+            mav.addObject("accountForm", accountForm);
+            // グループ名が選択肢からなくなってしまうのでmavにaddする
+            mav.addObject("groups", accountService.findAllGroups());
+            AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+            mav.addObject("loginAccount", loginAccount);
+            mav.setViewName("/editAccount");
+            return mav;
+        }
+        return mav;
+    }
 }
