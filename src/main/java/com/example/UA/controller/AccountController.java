@@ -12,6 +12,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AccountController {
      * ログイン処理
      */
     @PostMapping("/login")
-    public ModelAndView login(@ModelAttribute("accountForm") @Validated AccountForm accountForm,
+    public ModelAndView login(@ModelAttribute("accountForm") @Validated({AccountForm.login.class}) AccountForm accountForm,
                               BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
         if (bindingResult.hasErrors()) {
@@ -138,7 +139,7 @@ public class AccountController {
      * アカウント登録処理
      */
     @PostMapping("/newAccount")
-    public ModelAndView newAccount(@ModelAttribute("accountForm") @Validated AccountForm accountForm,
+    public ModelAndView newAccount(@ModelAttribute("accountForm") @Validated({AccountForm.newAccount.class}) AccountForm accountForm,
                                    BindingResult result) {
         ModelAndView mav = new ModelAndView();
         List<String> errorMessages = new ArrayList<>();
@@ -164,5 +165,42 @@ public class AccountController {
             mav.setViewName("redirect:/accountManage");
         }
         return mav;
+    }
+
+    /*
+     * アカウント編集画面表示
+     */
+    @GetMapping("/editAccount/{id}")
+    public ModelAndView editAccount (@PathVariable String id, RedirectAttributes redirectAttributes) {
+        // URLの数字チェック
+        if (!id.matches("^[0-9]*$")) {
+            redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+            return new ModelAndView("redirect:/accountManage");
+        }
+        ModelAndView mav = new ModelAndView();
+        try {
+            AccountForm account = accountService.findAccount(Integer.parseInt(id));
+            mav.addObject("accountForm", account);
+            // グループ情報をDBから持ってきたいので取得。
+            List<GroupForm> groups = accountService.findAllGroups();
+            mav.addObject("groups", groups);
+            AccountForm loginAccount = (AccountForm) session.getAttribute("loginAccount");
+            mav.addObject("loginAccount", loginAccount);
+            mav.setViewName("/editAccount");
+            return mav;
+        } catch (Exception e) {
+            //idが存在しない値だった場合
+            redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+            return new ModelAndView("redirect:/accountManage");
+        }
+    }
+
+    /*
+     * 編集画面表示(idがURLにのってなかった場合のバリデーションの役割)
+     */
+    @GetMapping({"/editAccount", "/editAccount/"})
+    public ModelAndView noIdEditAccount (RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+        return new ModelAndView("redirect:/accountManage");
     }
 }

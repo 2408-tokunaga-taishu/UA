@@ -6,6 +6,12 @@
 </head>
 <body>
     <h2>アカウント管理画面</h2>
+    <div th:if="${errorMessages != null}">
+        <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
+            <li th:text="${errorMessage}"/>
+        </div>
+        <br />
+    </div>
     <a th:href="@{/newAccount}">
         <button class="new-account" type="button">アカウント新規作成</button>
     </a>
@@ -65,6 +71,11 @@
                             </form>
                         </div>
                     </div>
+                </td>
+                <td>
+                    <a th:href="@{/editAccount/{id}(id=${a.id})}">
+                        <button class="edit-account" type="button">編集</button>
+                    </a>
                 </td>
             </tr>
         </div>
