@@ -1,18 +1,20 @@
 package com.example.UA.controller;
 
 import com.example.UA.controller.form.AccountForm;
+import com.example.UA.controller.form.GroupForm;
 import com.example.UA.service.AccountService;
 import com.example.UA.utils.CipherUtil;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -43,7 +45,7 @@ public class AccountController {
      * ログイン処理
      */
     @PostMapping("/login")
-    public ModelAndView login(@ModelAttribute("accountForm") @Validated AccountForm accountForm,
+    public ModelAndView login(@ModelAttribute("accountForm") @Validated({AccountForm.login.class}) AccountForm accountForm,
                               BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
         if (bindingResult.hasErrors()) {
@@ -95,12 +97,146 @@ public class AccountController {
     public ModelAndView accountManage() {
         ModelAndView mav = new ModelAndView();
         List<AccountForm> accounts = accountService.findAllAccount();
-//        List<GroupForm> groups = groupService.findAllgroups();
         mav.setViewName("/accountManage");
         mav.addObject("accounts", accounts);
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
         mav.addObject("loginAccount", loginAccount);
-//        mav.addObject("groups", groups);
+        return mav;
+    }
+
+    /*
+     * アカウント復活・停止機能
+     */
+    @PutMapping("/{id}")
+    public ModelAndView changeIsStopped(@PathVariable("id") int id) {
+        // 対象のアカウントを取得
+        AccountForm accountData = accountService.findAccount(id);
+        // アカウントのisStoppedの値を変更させる
+        if (accountData.getIsStopped() == 1) {
+            accountData.setIsStopped(0);
+        } else {
+            accountData.setIsStopped(1);
+        }
+        // 値を変更させたらデータを保存させる
+        accountService.saveAccount(accountData);
+        return new ModelAndView("redirect:/accountManage");
+    }
+
+    /*
+     * アカウント登録画面表示
+     */
+    @GetMapping("/newAccount")
+    public ModelAndView newAccount(@ModelAttribute("accountForm") AccountForm accountForm) {
+        ModelAndView mav = new ModelAndView();
+        // selectタグで表示するグループ名を取得
+        List<GroupForm> groups = accountService.findAllGroups();
+        mav.addObject("groups", groups);
+        mav.setViewName("/newAccount");
+        return mav;
+    }
+
+    /*
+     * アカウント登録処理
+     */
+    @PostMapping("/newAccount")
+    public ModelAndView newAccount(@ModelAttribute("accountForm") @Validated({AccountForm.newAccount.class}) AccountForm accountForm,
+                                   BindingResult result) {
+        ModelAndView mav = new ModelAndView();
+        List<String> errorMessages = new ArrayList<>();
+        // 0-1の切り替えフラグのカラムに値を追加
+        accountForm.setIsStopped(0);
+        accountForm.setSuperVisor(0);
+        accountForm.setAdmin(0);
+        // エラー処理
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+        }
+        if (errorMessages.size() > 0) {
+            mav.addObject("errorMessages", errorMessages);
+            mav.addObject("accountForm", accountForm);
+            mav.addObject("groups", accountService.findAllGroups());
+            mav.setViewName("/newAccount");
+        } else {
+            // パスワード暗号化
+            accountForm.setPassword(CipherUtil.encrypt(accountForm.getPassword()));
+            accountService.saveAccount(accountForm);
+            mav.setViewName("redirect:/accountManage");
+        }
+        return mav;
+    }
+
+    /*
+     * アカウント編集画面表示
+     */
+    @GetMapping("/editAccount/{id}")
+    public ModelAndView editAccount (@PathVariable String id, RedirectAttributes redirectAttributes) {
+        // URLの数字チェック
+        if (!id.matches("^[0-9]*$")) {
+            redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+            return new ModelAndView("redirect:/accountManage");
+        }
+        ModelAndView mav = new ModelAndView();
+        try {
+            AccountForm account = accountService.findAccount(Integer.parseInt(id));
+            mav.addObject("accountForm", account);
+            // グループ情報をDBから持ってきたいので取得。
+            List<GroupForm> groups = accountService.findAllGroups();
+            mav.addObject("groups", groups);
+            AccountForm loginAccount = (AccountForm) session.getAttribute("loginAccount");
+            mav.addObject("loginAccount", loginAccount);
+            mav.setViewName("/editAccount");
+            return mav;
+        } catch (Exception e) {
+            //idが存在しない値だった場合
+            redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+            return new ModelAndView("redirect:/accountManage");
+        }
+    }
+
+    /*
+     * 編集画面表示(idがURLにのってなかった場合のバリデーションの役割)
+     */
+    @GetMapping({"/editAccount", "/editAccount/"})
+    public ModelAndView noIdEditAccount (RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+        return new ModelAndView("redirect:/accountManage");
+    }
+
+    /*
+     * アカウント編集処理
+     */
+    @PutMapping("/editAccount/{id}")
+    public ModelAndView editAccount(@PathVariable int id, @Validated({AccountForm.editAccount.class}) AccountForm accountForm,
+                                 BindingResult result) {
+        ModelAndView mav = new ModelAndView();
+        List<String> errorMessages = new ArrayList<>();
+        // エラー処理
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+        }
+        if (errorMessages.isEmpty()) {
+            try {
+                accountService.updateAccount(accountForm);
+                mav.setViewName("redirect:/accountManage");
+                return mav;
+            } catch (Exception e) {
+                errorMessages.add(e.getMessage());
+            }
+        }
+        if (errorMessages.size() > 0) {
+            mav.addObject("errorMessages", errorMessages);
+            mav.addObject("accountForm", accountForm);
+            // グループ名が選択肢からなくなってしまうのでmavにaddする
+            mav.addObject("groups", accountService.findAllGroups());
+            AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+            mav.addObject("loginAccount", loginAccount);
+            mav.setViewName("/editAccount");
+            return mav;
+        }
         return mav;
     }
 }

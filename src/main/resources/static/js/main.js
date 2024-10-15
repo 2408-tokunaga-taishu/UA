@@ -1,3 +1,12 @@
+ $( function() {
+   $('input[name="isStopped-button"]').on('click',function(){
+        if (confirm("アカウント稼働状態を変更しますか？")){
+           return true;
+        } else {
+            return false;
+        }
+    });
+ });
 
  $( function() {
    $('input[name="delete-button"]').on('click',function(){

@@ -43,4 +43,8 @@ public class Account {
 
     @Column(name="updated_date", insertable = false)
     private Date updatedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id", insertable = false, updatable = false)
+    private Group group;
 }

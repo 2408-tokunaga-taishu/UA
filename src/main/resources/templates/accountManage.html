@@ -6,6 +6,12 @@
 </head>
 <body>
     <h2>アカウント管理画面</h2>
+    <div th:if="${errorMessages != null}">
+        <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
+            <li th:text="${errorMessage}"/>
+        </div>
+        <br />
+    </div>
     <a th:href="@{/newAccount}">
         <button class="new-account" type="button">アカウント新規作成</button>
     </a>
@@ -23,40 +29,58 @@
             <th>承認者権限</th>
             <th>管理者権限</th>
         </tr>
-        <div th:each="accounts : ${accounts}">
+        <div th:each="a : ${accounts}">
             <tr>
                 <td>
-                    <p th:text="${accounts.account}" />
+                    <p th:text="${a.account}" />
                 </td>
                 <td>
-                    <p th:text="${accounts.name}" />
+                    <p th:text="${a.name}" />
                 </td>
                 <td>
-                    <p th:text="${accounts.groupId}" />
+                    <p th:text="${a.groupName}" />
                 </td>
                 <td>
-                    <th:block th:switch="${accounts.isStopped}">
+                    <th:block th:switch="${a.isStopped}">
                         <span th:case=0 th:text="稼働中" />
                         <span th:case=1 th:text="停止中" />
                     </th:block>
                 </td>
                 <td>
-                    <th:block th:switch="${accounts.superVisor}">
+                    <th:block th:switch="${a.superVisor}">
                         <span th:case=0 th:text="無" />
                         <span th:case=1 th:text="有" />
                     </th:block>
                 </td>
                 <td>
-                    <th:block th:switch="${accounts.admin}">
+                    <th:block th:switch="${a.admin}">
                         <span th:case=0 th:text="無" />
-                        <span th:case=1 th:test="有" />
+                        <span th:case=1 th:text="有" />
                     </th:block>
                 </td>
                 <td>
-                    
+                    <div th:if="${loginAccount.id != a.id}">
+                        <div th:if="${a.isStopped == 0}">
+                            <form th:method="put" th:action="@{/{id}(id=${a.id})}">
+                                <input type="submit" value="停止" name="isStopped-button" class="off">
+                            </form>
+                        </div>
+                        <div th:if="${a.isStopped == 1}">
+                            <form th:method="put" th:action="@{/{id}(id=${a.id})}">
+                                <input type="submit" value="復活" name="isStopped-button" class="on">
+                            </form>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a th:href="@{/editAccount/{id}(id=${a.id})}">
+                        <button class="edit-account" type="button">編集</button>
+                    </a>
                 </td>
             </tr>
         </div>
     </table>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html>
