@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>承認・差し戻し</title>
+    </head>
+    <body>
+        <h2>承認・差し戻し</h2>
+        <table class="approval-table">
+            <tr class="approval-table-title">
+                <th>氏名</th>
+                <th>日付</th>
+                <th>開始</th>
+                <th>終了</th>
+                <th>休憩</th>
+                <th>メモ</th>
+                <th>操作</th>
+            </tr>
+            <div class="works" th:each="work : ${accountWorkForms}">
+                <tr>
+                    <td>
+                        <div th:text="${work.accountName}"/>
+                    </td>
+                    <td>
+                        <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.workStart}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.workEnd}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.rest}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.memo}"></div>
+                    </td>
+                    <td>
+                        <form th:action="@{/approval/{id}(id = ${work.id})}" th:method="put">
+                            <input name="approval-button" type="submit" value="承認">
+                        </form>
+                        <form th:action="@{/remand/{id}(id = ${work.id})}" th:method="put">
+                            <input name="remand-button" type="submit" value="差し戻し">
+                        </form>
+                    </td>
+                </tr>
+            </div>
+        </table>
+        <a th:href="@{/}">
+            <input type="button" value="戻る">
+        </a>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/js/main.js}" th:inline="javascript"></script>
+    </body>
 </html>

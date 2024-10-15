@@ -1,6 +1,7 @@
 package com.example.UA.service;
 
 import com.example.UA.controller.form.AccountForm;
+import com.example.UA.controller.form.AccountWorkForm;
 import com.example.UA.controller.form.WorkForm;
 import com.example.UA.repository.WorkRepository;
 import com.example.UA.repository.entity.Work;
@@ -18,13 +19,12 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import static org.apache.logging.log4j.util.Strings.isBlank;
-import java.util.ArrayList;
+
+import java.util.*;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkService {
@@ -188,10 +188,53 @@ public class WorkService {
     public void deleteWork(int id) {
         workRepository.deleteById(id);
     }
-//        申請済みの同グループの勤怠取得
-    public List<WorkForm> findGroupWork(Integer groupId) {
-        List<Work> results = workRepository.findBygroupIdBystatus(groupId);
-        List<WorkForm> workForms = setWorkForm(results);
-        return workForms;
+//        申請済みの同グループの勤怠数取得
+    public int findGroupWorkCount(Integer groupId) {
+        int results = workRepository.countBy(groupId);
+        return results;
+
+    }
+//      差し戻し勤怠数取得
+    public int findRemandWorkCount(int id) {
+        int remand = workRepository.countByRemand(id);
+        return remand;
+    }
+//　　　　申請済み勤怠取得
+    public List<AccountWorkForm> findGroupWork(Integer groupId) {
+        List<Work> results = workRepository.findByGroupStatus(groupId);
+        List<AccountWorkForm> AccountWorkForm = setAccountWorkForm(results);
+        Map<Integer, List<AccountWorkForm>> account = AccountWorkForm
+                .stream()
+                .collect(Collectors.groupingBy(accountWorkForm -> accountWorkForm.getAccountId(), Collectors.toList()));
+        return AccountWorkForm;
+    }
+
+    private List<AccountWorkForm> setAccountWorkForm(List<Work> results) {
+        List<AccountWorkForm> accountWorkForms = new ArrayList<>();
+        for (Work work : results) {
+            AccountWorkForm accountWorkForm = new AccountWorkForm();
+            accountWorkForm.setId(work.getId());
+            accountWorkForm.setWorkStart(work.getWorkStart());
+            accountWorkForm.setWorkEnd(work.getWorkEnd());
+            accountWorkForm.setRest(work.getRest());
+            accountWorkForm.setDate(work.getDate());
+            accountWorkForm.setMemo(work.getMemo());
+            accountWorkForm.setStatus(work.getStatus());
+            accountWorkForm.setGroupId(work.getGroupId());
+            accountWorkForm.setAccountId(work.getAccountId());
+            accountWorkForm.setAccountName(work.getAccount().getName());
+            accountWorkForms.add(accountWorkForm);
+        }
+        return accountWorkForms;
+    }
+//      勤怠の承認処理
+    public void approval(int id) {
+        Date Date = new Date();
+        workRepository.approval(id, Date);
+    }
+
+    public void remand(int id) {
+        Date Date = new Date();
+        workRepository.remand(id, Date);
     }
 }

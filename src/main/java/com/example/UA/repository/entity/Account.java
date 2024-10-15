@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "accounts")
@@ -43,4 +44,5 @@ public class Account {
 
     @Column(name="updated_date", insertable = false)
     private Date updatedDate;
+    
 }

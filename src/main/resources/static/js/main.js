@@ -18,3 +18,23 @@
          }
      });
   });
+
+  $( function() {
+    $('input[name="approval-button"]').on('click',function(){
+         if (confirm("この勤怠を承認しますか？")){
+            return true;
+         } else {
+             return false;
+         }
+     });
+  });
+
+    $( function() {
+      $('input[name="remand-button"]').on('click',function(){
+           if (confirm("この勤怠を差し戻ししますか？")){
+              return true;
+           } else {
+               return false;
+           }
+       });
+    });

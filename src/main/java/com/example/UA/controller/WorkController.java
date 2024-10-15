@@ -105,4 +105,21 @@ public class WorkController {
         mav.setViewName("redirect:/");
         return mav;
     }
+
+//    勤怠の承認
+    @PutMapping("/approval/{id}")
+    public ModelAndView approval (@PathVariable int id) {
+        ModelAndView mav = new ModelAndView();
+        workService.approval(id);
+        mav.setViewName("redirect:/approval");
+        return mav;
+    }
+//    勤怠の差し戻し
+    @PutMapping("/remand/{id}")
+    public ModelAndView remand(@PathVariable int id) {
+        ModelAndView mav = new ModelAndView();
+        workService.remand(id);
+        mav.setViewName("redirect:/approval");
+        return mav;
+    }
 }
