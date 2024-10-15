@@ -1,25 +1,74 @@
 package com.example.UA.controller.form;
 
 import com.example.UA.Validation.CheckBlank;
+import com.example.UA.Validation.Unique;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
 public class AccountForm {
 
-    private Integer id;
+    // 適応させるバリデーションをグループで分ける
+    public static interface login{}
+    public static interface newAccount{}
+    public static interface editAccount{}
 
-    @CheckBlank(message = "アカウントを入力してください")
+    private int id;
+
+    @CheckBlank(message = "アカウントを入力してください", groups = {login.class, newAccount.class, editAccount.class})
+    @Unique(groups = {newAccount.class})
     private String account;
 
-    @CheckBlank(message = "パスワードを入力してください")
+    @AssertTrue(message = "アカウントは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class, editAccount.class})
+    private boolean isAccountValid() {
+        if (account.isBlank()) {
+            return true; //アカウント名が空の場合は@CheckBlankでまずバリデーションするため処理を抜ける
+        } else {
+            // 以下の条件を満たしていない場合はエラーメッセージを表示する
+            return (account.length() >= 6 && account.length() <= 20 && account.matches("^[\\x20-\\x7E]+$"));
+        }
+    }
+
+    @CheckBlank(message = "パスワードを入力してください", groups = {login.class, newAccount.class})
     private String password;
 
+    private String passCheck;
+
+    @AssertTrue(message = "パスワードは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class})
+    private boolean isPasswordValid() {
+        if (password.isBlank()) {
+            return true; //パスワードが空の場合は@CheckBlankでまずバリデーションするため処理を抜ける
+        } else {
+            // 以下の条件を満たしていない場合はエラーメッセージを表示する
+            return (password.length() >= 6 && password.length() <= 20 && password.matches("^[\\x20-\\x7E]+$"));
+        }
+    }
+
+    @AssertTrue(message = "パスワードと確認用パスワードが一致しません", groups = {newAccount.class})
+    private boolean isSamePassword() {
+        return Objects.equals(password, passCheck);
+    }
+
+
+    @CheckBlank(message = "氏名を入力してください", groups = {newAccount.class, editAccount.class})
     private String name;
 
+    @AssertTrue(message = "氏名は10文字以下で入力してください", groups = {newAccount.class, editAccount.class})
+    private boolean isNameValid() {
+        if (name.isBlank()) {
+            return true;
+        } else {
+            return (name.length() <= 10);
+        }
+    }
+
+    @NotNull(message = "所属グループを選択してください", groups = {newAccount.class, editAccount.class})
     private Integer groupId;
 
     private Integer isStopped;
@@ -31,4 +80,6 @@ public class AccountForm {
     private Date createdDate;
 
     private Date updatedDate;
+
+    private String groupName;
 }

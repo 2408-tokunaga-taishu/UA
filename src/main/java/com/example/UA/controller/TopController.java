@@ -30,6 +30,11 @@ public class TopController {
         ModelAndView mav = new ModelAndView();
         List<WorkForm> works = workService.findAllWorks();
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        //　アカウント管理画面表示フラグ
+        boolean isShowAccountManage = false;
+        if (loginAccount.getAdmin() == 1) {
+            isShowAccountManage = true;
+        }
 //      承認待ち勤怠数の取得
         if (loginAccount.getSuperVisor() == 1) {
         int count = workService.findGroupWorkCount(loginAccount.getGroupId());
@@ -41,6 +46,7 @@ public class TopController {
         mav.addObject("works", works);
         mav.addObject("displayMonth", workService.getDisplayMonth());
         mav.addObject("loginAccount", loginAccount);
+        mav.addObject("isShowAccountManage", isShowAccountManage);
         mav.setViewName("/top");
         return mav;
     }

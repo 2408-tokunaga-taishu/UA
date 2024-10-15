@@ -18,6 +18,11 @@
     <a th:href="@{/newWork}">
           <input type="button" value="新規追加">
     </a>
+    <div th:if="${isShowAccountManage}">
+        <a th:href="@{/accountManage}">
+            <input type="button" value="アカウント管理画面">
+        </a>
+    </div>
     <div>
         <a th:href="@{/logout}">
             <input type="button" value="ログアウト">
