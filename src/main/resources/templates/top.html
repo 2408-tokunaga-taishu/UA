@@ -95,7 +95,17 @@
             </div>
         </div>
     </table>
-
+    <hr>
+    <table class="count">
+        <tr class="count-table-title">
+            <th>出勤日数</th>
+            <th>労働時間</th>
+            <th>休憩時間</th>
+        </tr>
+        <tr>
+            <td th:text="${count}"></td>
+        </tr>
+    </table>
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script th:src="@{/js/main.js}" th:inline="javascript"></script>
 

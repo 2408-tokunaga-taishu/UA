@@ -194,4 +194,7 @@ public class WorkService {
         List<WorkForm> workForms = setWorkForm(results);
         return workForms;
     }
+
+    public Calender calculateWorkingTime() {
+    }
 }

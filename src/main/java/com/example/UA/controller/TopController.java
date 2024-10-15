@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -34,10 +35,17 @@ public class TopController {
         if (loginAccount.getAdmin() == 1) {
             isShowAccountManage = true;
         }
+        // 当月の出勤日数算出(streamAPI)
+        long count = works.stream()
+                .filter(work -> work.getAccountId().equals(loginAccount.getId()))
+                .count();
+        // 当月の労働時間算出
+        Calender totalWorkingTime = workService.calculateWorkingTime();
         mav.addObject("works", works);
         mav.addObject("displayMonth", workService.getDisplayMonth());
         mav.addObject("loginAccount", loginAccount);
         mav.addObject("isShowAccountManage", isShowAccountManage);
+        mav.addObject("count", count);
         mav.setViewName("/top");
         return mav;
     }
