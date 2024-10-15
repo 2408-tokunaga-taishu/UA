@@ -9,9 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -56,6 +54,55 @@ public class WorkController {
             workService.saveWork(workForm, account);
             mav.setViewName("redirect:/");
         }
+        return mav;
+    }
+
+//    勤怠編集初期表示
+    @GetMapping("/editWork/{id}")
+    public ModelAndView edit(@PathVariable int id) {
+        ModelAndView mav = new ModelAndView();
+        WorkForm work = workService.findWork(id);
+        mav.setViewName("/editWork");
+        mav.addObject("work", work);
+        return mav;
+    }
+
+//    勤怠修正処理
+    @PutMapping("/editWork/{id}")
+    public ModelAndView putWork (@ModelAttribute ("work") @Validated WorkForm workForm, BindingResult bindingResult) throws ParseException {
+        List<String> errorMessages = new ArrayList<>();
+        ModelAndView mav = new ModelAndView();
+        if (bindingResult.hasErrors()) {
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+        }
+        if (errorMessages.size() > 0) {
+            mav.addObject("errorMessages",errorMessages);
+            mav.addObject("work", workForm);
+            mav.setViewName("/editWork");
+        } else {
+            workService.editWork(workForm);
+            mav.setViewName("redirect:/");
+        }
+        return mav;
+    }
+
+//    勤怠の申請処理
+    @PutMapping("/request/{id}")
+    public ModelAndView requestWork(@PathVariable int id) {
+        ModelAndView mav = new ModelAndView();
+        workService.saveStatus(id);
+        mav.setViewName("redirect:/");
+        return mav;
+    }
+
+//    勤怠の削除処理
+    @DeleteMapping("/deleteWork/{id}")
+    public ModelAndView deleteWork(@PathVariable int id) {
+        ModelAndView mav = new ModelAndView();
+        workService.deleteWork(id);
+        mav.setViewName("redirect:/");
         return mav;
     }
 }

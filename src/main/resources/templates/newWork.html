@@ -14,7 +14,7 @@
         <div class="work-form">
             <form th:action="@{/addWork}" th:object="${workForm}" method="post">
                 <div class="new-date">日付
-                    <input type="date" th:field="*{strDate}" />
+                    <input type="date" th:field="*{strDate}" >
                 </div>
                 <div class="new-start-time">勤務開始時間
                     <input type="time" th:field="*{strWorkStart}">
@@ -26,10 +26,10 @@
                     <input type="time" th:field="*{strRestStart}">
                 </div>
                 <div class="new-rest-end">休憩終了時間
-                    <input type="time" th:field="*{strRestEnd}">
+                    <input type="time" th:field="*{strRestEnd}" >
                 </div>
                 <div class="memo">メモ
-                    <input type="text" th:field="*{memo}">
+                    <input type="text" th:field="*{memo}" >
                 </div>
                 <input type="submit" value="追加">
             </form>

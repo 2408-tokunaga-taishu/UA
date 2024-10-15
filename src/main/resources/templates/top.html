@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>ホーム</title>
+
 </head>
 <body>
     <h2>勤怠管理システム</h2>
+    <div class="notice">
+        <div th:if="${count > 0 && loginAccount.superVisor == 1}">
+            <li>[[${count}]]件の未承認の勤怠があります</li>
+        </div>
+    </div>
     <a th:href="@{/newWork}">
           <input type="button" value="新規追加">
     </a>
@@ -56,8 +62,8 @@
                 </td>
                 <td>
                     <div th:if="${work.status == 0 || work.status == 3}">
-                        <form th:method="put" th:action="@{/{id}(id=${work.id})}">
-                            <input type="submit" value="申請">
+                        <form th:method="put" th:action="@{/request/{id}(id=${work.id})}">
+                            <input type="submit" name="request-button" value="申請">
                         </form>
                     </div>
                     <div th:if="${work.status == 1}">
@@ -69,15 +75,29 @@
                 </td>
                 <td>
                     <a th:href="@{/editWork/{id}(id=${work.id})}">
-                        <button class="edit-work" type="button">編集</button>
+                        <div th:if="${work.status == 1 || work.status == 2}">
+                            <button class="edit-work"  type="button" disabled>編集</button>
+                        </div>
+                        <div th:if="${work.status ==0 || work.status == 3}">
+                            <button class="edit-work"  type="button" >編集</button>
+                        </div>
                     </a>
                     <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
-                        <input type="submit" name="delete-button" value="削除">
+                        <div th:if="${work.status == 1 || work.status == 2}">
+                            <input type="submit" name="delete-button" value="削除" disabled>
+                        </div>
+                        <div th:if="${work.status == 0 || work.status == 3}">
+                            <input type="submit" name="delete-button" value="削除" >
+                        </div>
                     </form>
                 </td>
             </tr>
             </div>
         </div>
     </table>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/js/main.js}" th:inline="javascript"></script>
+
 </body>
 </html>
