@@ -54,7 +54,7 @@ public class AccountService {
      * アカウント管理画面で表示する全アカウント取得
      */
     public List<AccountForm> findAllAccount() {
-        List<Account> results = accountRepository.findAll();
+        List<Account> results = accountRepository.findAllByOrderById();
         List<AccountForm> accounts = setAccountForm(results);
         return accounts;
     }

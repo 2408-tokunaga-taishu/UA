@@ -36,6 +36,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'commons-codec:commons-codec:1.17.1' //CipherUtil(パスワード暗号化)で使用
 	implementation 'org.apache.commons:commons-lang3:3.12.0' //StringUtilsで使用
+	implementation 'org.webjars:jquery:3.5.1'
+	implementation 'org.webjars:webjars-locator:0.40'
 }
 
 tasks.named('test') {
