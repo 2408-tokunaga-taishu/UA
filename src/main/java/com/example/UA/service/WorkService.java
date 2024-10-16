@@ -5,18 +5,17 @@ import com.example.UA.controller.form.AccountWorkForm;
 import com.example.UA.controller.form.WorkForm;
 import com.example.UA.repository.WorkRepository;
 import com.example.UA.repository.entity.Work;
+import org.hibernate.validator.internal.util.logging.formatter.DurationFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Month;
+import java.time.*;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
@@ -236,5 +235,22 @@ public class WorkService {
     public void remand(int id) {
         Date Date = new Date();
         workRepository.remand(id, Date);
+    }
+
+    public String calculateWorkingTime(List<WorkForm> works) {
+        Duration workingTime = Duration.ZERO;
+        for (int i = 0; i < works.size(); i++) {
+            LocalTime startTime = works.get(i).getWorkStart().toLocalTime();
+            LocalTime endTime = works.get(i).getWorkEnd().toLocalTime();
+            LocalTime restTime = works.get(i).getRest().toLocalTime();
+            Duration workDuration = Duration.between(startTime, endTime); // 開始時刻～終了時刻の時間算出
+            Duration restDuration = Duration.ofHours(restTime.getHour()).plusMinutes(restTime.getMinute());
+            Duration dayWorkingTime = workDuration.minus(restDuration);
+            workingTime = workingTime.plus(dayWorkingTime);
+        }
+        long hours = workingTime.toHours();
+        long minutes = workingTime.minusHours(hours).toMinutes();
+        String totalWorkingTime = String.format("%02d:%02d", hours, minutes);
+        return totalWorkingTime;
     }
 }
