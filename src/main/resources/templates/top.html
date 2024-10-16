@@ -65,13 +65,13 @@
                     <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
                 </td>
                 <td>
-                    <div th:text="${work.workStart}"></div>
+                    <div th:text="${#dates.format(work.workStart, 'HH:mm')}"></div>
                 </td>
                 <td>
-                    <div th:text="${work.workEnd}"></div>
+                    <div th:text="${#dates.format(work.workEnd, 'HH:mm')}"></div>
                 </td>
                 <td>
-                    <div th:text="${work.rest}"></div>
+                    <div th:text="${#dates.format(work.rest, 'HH:mm')}"></div>
                 </td>
                 <td>
                     <div th:text="${work.memo}"></div>

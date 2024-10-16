@@ -142,6 +142,12 @@ public class TopController {
                                         BindingResult result) {
         ModelAndView mav = new ModelAndView();
         List<String> errorMessages = new ArrayList<>();
+        // 現在のパスワードが正しいかチェック
+        String registeredPassword = accountService.findAccount(id).getPassword();
+        accountForm.setOldPassword(CipherUtil.encrypt(accountForm.getOldPassword()));
+        if (!registeredPassword.equals(accountForm.getOldPassword())) {
+            errorMessages.add("現在のパスワードが正しくありません");
+        }
         // エラー処理
         if (result.hasErrors()) {
             for (ObjectError error : result.getAllErrors()) {

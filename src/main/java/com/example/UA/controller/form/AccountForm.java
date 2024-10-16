@@ -41,6 +41,8 @@ public class AccountForm {
 
     private String passCheck;
 
+    private String oldPassword;
+
     @AssertTrue(message = "パスワードは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class, settingPassword.class})
     private boolean isPasswordValid() {
         if (password.isBlank()) {
