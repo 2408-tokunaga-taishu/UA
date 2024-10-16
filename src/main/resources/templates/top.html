@@ -16,6 +16,9 @@
         <div th:if="${count > 0 && loginAccount.superVisor == 1}">
             <li>[[${count}]]件の未承認の勤怠があります</li>
         </div>
+        <div th:if="${remand > 0}">
+            <li>[[${remand}]]件の差し戻しの勤怠があります</li>
+        </div>
     </div>
     <a th:href="@{/newWork}">
           <input type="button" value="新規追加">
@@ -40,6 +43,11 @@
     <form th:method="post" th:action="@{/nextMonth}">
         <input type="submit" name="next-month" value="次月">
     </form>
+    <div th:if="${loginAccount.superVisor == 1} ">
+        <a th:href="@{approval}">
+            <input type="button" value="承認">
+        </a>
+    </div>
     <table class="works">
         <tr class="works-table-title">
             <th>日付</th>
@@ -50,7 +58,7 @@
             <th>ステータス</th>
             <th>操作</th>
         </tr>
-        <div th:each="work : ${works}">
+        <div class="works" th:each="work : ${works}">
             <div th:if="${work.accountId == loginAccount.id}">
             <tr>
                 <td>

@@ -1,6 +1,8 @@
 package com.example.UA.controller.form;
 
 
+import com.example.UA.Validation.CheckBlank;
+import com.example.UA.repository.entity.Account;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -35,13 +37,13 @@ public class WorkForm {
 
     private Date date;
 
-    @NotBlank(message = "日付を入力してください")
+    @CheckBlank(message = "日付を入力してください")
     private String strDate;
 
-    @NotBlank(message = "勤務開始時間を入力してください")
+    @CheckBlank(message = "勤務開始時間を入力してください")
     private String strWorkStart;
 
-    @NotBlank(message = "勤務終了時間を入力してください")
+    @CheckBlank(message = "勤務終了時間を入力してください")
     private String strWorkEnd;
 
     @AssertTrue(message = "勤務終了時間が勤務開始時間より前に設定されています")
@@ -101,4 +103,5 @@ public class WorkForm {
     private Date createdDate;
 
     private Date updatedDate;
+
 }

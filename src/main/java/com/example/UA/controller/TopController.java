@@ -1,6 +1,7 @@
 package com.example.UA.controller;
 
 import com.example.UA.controller.form.AccountForm;
+import com.example.UA.controller.form.AccountWorkForm;
 import com.example.UA.controller.form.WorkForm;
 import com.example.UA.service.AccountService;
 import com.example.UA.service.WorkService;
@@ -53,6 +54,15 @@ public class TopController {
         // 当月の労働時間算出
         String totalWorkingTime = workService.calculateWorkingTime(works);
         mav.addObject("totalWorkingTime", totalWorkingTime);
+//      承認待ち勤怠数の取得
+        if (loginAccount.getSuperVisor() == 1) {
+        int count = workService.findGroupWorkCount(loginAccount.getGroupId());
+        mav.addObject("count", count);
+        }
+//      差し戻し勤怠数の取得
+        int remand = workService.findRemandWorkCount(loginAccount.getId());
+        mav.addObject("remand", remand);
+
         mav.addObject("works", works);
         mav.addObject("displayMonth", workService.getDisplayMonth());
         mav.addObject("loginAccount", loginAccount);
@@ -150,6 +160,15 @@ public class TopController {
             mav.setViewName("redirect:/top");
             return mav;
         }
+    }
+  
+    @GetMapping("/approval")
+    public ModelAndView approval() {
+        ModelAndView mav = new ModelAndView();
+        AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        List<AccountWorkForm> accountWorkForms = workService.findGroupWork(loginAccount.getGroupId());
+        mav.setViewName("/approval");
+        mav.addObject("accountWorkForms",accountWorkForms);
         return mav;
     }
 }

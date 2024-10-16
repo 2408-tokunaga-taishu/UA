@@ -54,5 +54,8 @@ public class Work {
     @Column(name="updated_date", insertable = false)
     private Date updatedDate;
 
+    @ManyToOne
+    @JoinColumn(name = "account_id", insertable = false, updatable = false)
+    private Account account;
 
 }
