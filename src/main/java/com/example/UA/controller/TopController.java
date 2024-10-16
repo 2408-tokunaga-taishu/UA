@@ -53,7 +53,8 @@ public class TopController {
                 .filter(work -> work.getAccountId().equals(loginAccount.getId()))
                 .count();
         // 当月の労働時間算出
-        String totalWorkingTime = workService.calculateWorkingTime(works);
+        List<WorkForm> personalWorks = workService.findWorksByAccountId(loginAccount.getId());
+        String totalWorkingTime = workService.calculateWorkingTime(personalWorks);
         mav.addObject("totalWorkingTime", totalWorkingTime);
 //      承認待ち勤怠数の取得
         if (loginAccount.getSuperVisor() == 1) {
