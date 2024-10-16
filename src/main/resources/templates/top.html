@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>ホーム</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 <body>
-    <h2>勤怠管理システム</h2>
+    <div th:include="header"></div>
     <div th:if="${errorMessages != null}">
         <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
             <li th:text="${errorMessage}"/>
@@ -21,24 +22,8 @@
             <li>[[${remand}]]件の差し戻しの勤怠があります</li>
         </div>
     </div>
-    <a th:href="@{/newWork}">
-          <input type="button" value="新規追加">
-    </a>
-    <div th:if="${isShowAccountManage}">
-        <a th:href="@{/accountManage}">
-            <input type="button" value="アカウント管理画面">
-        </a>
-    </div>
-    <a th:href="@{/settingPassword/{id}(id=${loginAccount.id})}">
-        <button class="edit-password" type="button">パスワード変更</button>
-    </a>
-    <div>
-        <a th:href="@{/logout}">
-            <input type="button" value="ログアウト">
-        </a>
-    </div>
     <form th:method="post" th:action="@{/previousMonth}">
-        <input type="submit" name="previous-month" value="前月">
+        <input type="submit" name="previous-month" value="前月" class="btn btn-primary">
     </form>
     <th:block th:text="${displayMonth} + '月'"></th:block>
     <form th:method="post" th:action="@{/nextMonth}">
@@ -122,6 +107,7 @@
         <tr>
             <td th:text="${countDays}"></td>
             <td th:text="${totalWorkingTime}"></td>
+            <td th:text="${totalRestTime}"></td>
         </tr>
     </table>
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>

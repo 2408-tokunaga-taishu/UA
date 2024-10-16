@@ -5,6 +5,7 @@
     <title>アカウント管理画面</title>
 </head>
 <body>
+    <div th:include="header"></div>
     <h2>アカウント管理画面</h2>
     <div th:if="${errorMessages != null}">
         <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">

@@ -37,4 +37,8 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
     @Modifying
     @Query("UPDATE Work  SET status = 3, updatedDate = :Date WHERE id = :id")
     void remand(@Param("id") int id, @Param("Date") Date date);
+
+    // 個人別の勤怠集計
+    @Query("SELECT w FROM Work w WHERE w.accountId = :accountId AND w.date BETWEEN :start AND :end")
+    List<Work> findWorksByAccountId(@Param("accountId") int id, @Param("start") Date start, @Param("end") Date end);
 }
