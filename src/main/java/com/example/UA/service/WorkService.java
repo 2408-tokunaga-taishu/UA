@@ -200,13 +200,13 @@ public class WorkService {
         return remand;
     }
 //　　　　申請済み勤怠取得
-    public List<AccountWorkForm> findGroupWork(Integer groupId) {
+    public Map<String, List<AccountWorkForm>> findGroupWork(Integer groupId) {
         List<Work> results = workRepository.findByGroupStatus(groupId);
         List<AccountWorkForm> AccountWorkForm = setAccountWorkForm(results);
-        Map<Integer, List<AccountWorkForm>> account = AccountWorkForm
+        Map<String, List<AccountWorkForm>> account = AccountWorkForm
                 .stream()
-                .collect(Collectors.groupingBy(accountWorkForm -> accountWorkForm.getAccountId(), Collectors.toList()));
-        return AccountWorkForm;
+                .collect(Collectors.groupingBy(accountWorkForm -> accountWorkForm.getAccountName(), Collectors.toList()));
+        return account;
     }
 
     private List<AccountWorkForm> setAccountWorkForm(List<Work> results) {

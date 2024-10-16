@@ -16,7 +16,9 @@
                 <th>メモ</th>
                 <th>操作</th>
             </tr>
-            <div class="works" th:each="work : ${accountWorkForms}">
+            <div class="maps" th:each="maps : ${accountWorkForms}">
+            <div th:each="list : ${maps.value}">
+            <div class="works" th:each="work : ${list}">
                 <tr>
                     <td>
                         <div th:text="${work.accountName}"/>
@@ -44,9 +46,12 @@
                             <input name="remand-button" type="submit" value="差し戻し">
                         </form>
                     </td>
-                </tr>
+                </tr><br>
+            </div>
+            </div>
             </div>
         </table>
+
         <a th:href="@{/}">
             <input type="button" value="戻る">
         </a>

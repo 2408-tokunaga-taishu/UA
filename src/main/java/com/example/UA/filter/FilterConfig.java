@@ -17,4 +17,17 @@ public class FilterConfig {
         bean.setOrder(1);
         return bean;
     }
+
+    @Bean
+    public FilterRegistrationBean<ManageFilter> manageFilter() {
+        FilterRegistrationBean<ManageFilter> bean = new FilterRegistrationBean<>();
+
+        bean.setFilter(new ManageFilter());
+        //  管理者権限が必要なURL
+        bean.addUrlPatterns("/editAccount/*");
+        bean.addUrlPatterns("/newAccount");
+        bean.addUrlPatterns("/accountManage");
+        bean.setOrder(2);
+        return bean;
+    }
 }

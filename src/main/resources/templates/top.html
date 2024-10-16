@@ -7,6 +7,12 @@
 </head>
 <body>
     <h2>勤怠管理システム</h2>
+    <div th:if="${errorMessages}">
+        <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
+            <li th:text="${errorMessage}"/>
+        </div>
+        <br />
+    </div>
     <div class="notice">
         <div th:if="${count > 0 && loginAccount.superVisor == 1}">
             <li>[[${count}]]件の未承認の勤怠があります</li>

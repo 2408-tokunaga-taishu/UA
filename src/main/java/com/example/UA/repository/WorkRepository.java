@@ -27,7 +27,7 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
     @Query("SELECT COUNT (w)  FROM Work w WHERE accountId = :id AND status = 3")
     int countByRemand(@Param("id") Integer id);
 //  申請済み勤怠取得
-    @Query("SELECT w FROM Work w WHERE groupId = :groupId AND status = 1")
+    @Query("SELECT w FROM Work w WHERE groupId = :groupId AND status = 1 ORDER BY date ASC")
     List<Work> findByGroupStatus(@Param("groupId") Integer groupId);
 //  勤怠のstatus承認に変更
     @Modifying

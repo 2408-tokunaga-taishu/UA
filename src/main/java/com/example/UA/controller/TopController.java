@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TopController {
@@ -43,11 +44,14 @@ public class TopController {
 //      差し戻し勤怠数の取得
         int remand = workService.findRemandWorkCount(loginAccount.getId());
         mav.addObject("remand", remand);
+//        エラーメッセージをSessionから取得
+        mav.addObject("errorMessages", session.getAttribute("errorMessages"));
         mav.addObject("works", works);
         mav.addObject("displayMonth", workService.getDisplayMonth());
         mav.addObject("loginAccount", loginAccount);
         mav.addObject("isShowAccountManage", isShowAccountManage);
         mav.setViewName("/top");
+        session.removeAttribute("errorMessages");
         return mav;
     }
 
@@ -77,7 +81,7 @@ public class TopController {
     public ModelAndView approval() {
         ModelAndView mav = new ModelAndView();
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
-        List<AccountWorkForm> accountWorkForms = workService.findGroupWork(loginAccount.getGroupId());
+        Map<String, List<AccountWorkForm>> accountWorkForms = workService.findGroupWork(loginAccount.getGroupId());
         mav.setViewName("/approval");
         mav.addObject("accountWorkForms",accountWorkForms);
         return mav;
