@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>ホーム</title>
-
 </head>
 <body>
     <h2>勤怠管理システム</h2>
+    <div th:if="${errorMessages != null}">
+        <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
+            <li th:text="${errorMessage}"/>
+        </div>
+        <br />
+    </div>
     <div class="notice">
         <div th:if="${count > 0 && loginAccount.superVisor == 1}">
             <li>[[${count}]]件の未承認の勤怠があります</li>
@@ -20,6 +25,9 @@
             <input type="button" value="アカウント管理画面">
         </a>
     </div>
+    <a th:href="@{/settingPassword/{id}(id=${loginAccount.id})}">
+        <button class="edit-password" type="button">パスワード変更</button>
+    </a>
     <div>
         <a th:href="@{/logout}">
             <input type="button" value="ログアウト">
