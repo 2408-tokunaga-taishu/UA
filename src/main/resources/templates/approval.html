@@ -8,7 +8,6 @@
         <h2>承認・差し戻し</h2>
         <table class="approval-table">
             <tr class="approval-table-title">
-                <th>氏名</th>
                 <th>日付</th>
                 <th>開始</th>
                 <th>終了</th>
@@ -17,23 +16,23 @@
                 <th>操作</th>
             </tr>
             <div class="maps" th:each="maps : ${accountWorkForms}">
-            <div th:each="list : ${maps.value}">
+                <tr class="account-name">
+                    <th>[[${maps.key}]]</th>
+                </tr>
+            <div class="list" th:each="list : ${maps.value}">
             <div class="works" th:each="work : ${list}">
                 <tr>
-                    <td>
-                        <div th:text="${work.accountName}"/>
-                    </td>
                     <td>
                         <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
                     </td>
                     <td>
-                        <div th:text="${work.workStart}"></div>
+                        <div th:text="${#dates.format(work.workStart, 'HH:mm')}"></div>
                     </td>
                     <td>
-                        <div th:text="${work.workEnd}"></div>
+                        <div th:text="${#dates.format(work.workEnd, 'HH:mm')}"></div>
                     </td>
                     <td>
-                        <div th:text="${work.rest}"></div>
+                        <div th:text="${#dates.format(work.rest, 'HH:mm')}"></div>
                     </td>
                     <td>
                         <div th:text="${work.memo}"></div>

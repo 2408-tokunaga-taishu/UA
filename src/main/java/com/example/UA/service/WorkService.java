@@ -188,19 +188,46 @@ public class WorkService {
         workRepository.deleteById(id);
     }
 //        申請済みの同グループの勤怠数取得
-    public int findGroupWorkCount(Integer groupId) {
-        int results = workRepository.countBy(groupId);
+    public int findGroupWorkCount(Integer groupId) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // 指定した月の1日目と最終日の取得
+        LocalDate LdStart = displayMonth.withDayOfMonth(1); //現在の月の1日を指す
+        LocalDate LdEnd = displayMonth.withDayOfMonth(displayMonth.lengthOfMonth()); //lengthOfMonthは月の長さを日数で返す
+        //　JpaRepositoryで処理ができるように形成
+        String startStr = LdStart + " 00:00:00";
+        String endStr = LdEnd + " 23:59:59";
+        Date start = sdf.parse(startStr);
+        Date end = sdf.parse(endStr);
+        int results = workRepository.countBy(groupId, start, end);
         return results;
 
     }
 //      差し戻し勤怠数取得
-    public int findRemandWorkCount(int id) {
-        int remand = workRepository.countByRemand(id);
+    public int findRemandWorkCount(int id) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // 指定した月の1日目と最終日の取得
+        LocalDate LdStart = displayMonth.withDayOfMonth(1); //現在の月の1日を指す
+        LocalDate LdEnd = displayMonth.withDayOfMonth(displayMonth.lengthOfMonth()); //lengthOfMonthは月の長さを日数で返す
+        //　JpaRepositoryで処理ができるように形成
+        String startStr = LdStart + " 00:00:00";
+        String endStr = LdEnd + " 23:59:59";
+        Date start = sdf.parse(startStr);
+        Date end = sdf.parse(endStr);
+        int remand = workRepository.countByRemand(id, start, end);
         return remand;
     }
 //　　　　申請済み勤怠取得
-    public Map<String, List<AccountWorkForm>> findGroupWork(Integer groupId) {
-        List<Work> results = workRepository.findByGroupStatus(groupId);
+    public Map<String, List<AccountWorkForm>> findGroupWork(Integer groupId) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // 指定した月の1日目と最終日の取得
+        LocalDate LdStart = displayMonth.withDayOfMonth(1); //現在の月の1日を指す
+        LocalDate LdEnd = displayMonth.withDayOfMonth(displayMonth.lengthOfMonth()); //lengthOfMonthは月の長さを日数で返す
+        //　JpaRepositoryで処理ができるように形成
+        String startStr = LdStart + " 00:00:00";
+        String endStr = LdEnd + " 23:59:59";
+        Date start = sdf.parse(startStr);
+        Date end = sdf.parse(endStr);
+        List<Work> results = workRepository.findByGroupStatus(groupId, start, end);
         List<AccountWorkForm> AccountWorkForm = setAccountWorkForm(results);
         Map<String, List<AccountWorkForm>> account = AccountWorkForm
                 .stream()

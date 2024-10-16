@@ -168,7 +168,7 @@ public class TopController {
     }
 
     @GetMapping("/approval")
-    public ModelAndView approval() {
+    public ModelAndView approval() throws ParseException {
         ModelAndView mav = new ModelAndView();
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
         Map<String, List<AccountWorkForm>> accountWorkForms = workService.findGroupWork(loginAccount.getGroupId());
