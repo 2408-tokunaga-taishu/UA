@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +41,8 @@ public class TopController {
                 .filter(work -> work.getAccountId().equals(loginAccount.getId()))
                 .count();
         // 当月の労働時間算出
-        Calender totalWorkingTime = workService.calculateWorkingTime();
+        String totalWorkingTime = workService.calculateWorkingTime(works);
+        mav.addObject("totalWorkingTime", totalWorkingTime);
         mav.addObject("works", works);
         mav.addObject("displayMonth", workService.getDisplayMonth());
         mav.addObject("loginAccount", loginAccount);
