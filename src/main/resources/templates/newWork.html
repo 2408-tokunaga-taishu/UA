@@ -5,6 +5,7 @@
         <title>新規追加</title>
     </head>
     <body>
+        <div th:include="header"></div>
         <h2>新規追加</h2>
         <div th:if="${errorMessages != null}">
             <div class="new-errorMessages" th:each="errorMessage : ${errorMessages}">
