@@ -18,6 +18,7 @@ public class AccountForm {
     public static interface login{}
     public static interface newAccount{}
     public static interface editAccount{}
+    public static interface settingPassword{}
 
     private int id;
 
@@ -35,12 +36,12 @@ public class AccountForm {
         }
     }
 
-    @CheckBlank(message = "パスワードを入力してください", groups = {login.class, newAccount.class})
+    @CheckBlank(message = "パスワードを入力してください", groups = {login.class, newAccount.class, settingPassword.class})
     private String password;
 
     private String passCheck;
 
-    @AssertTrue(message = "パスワードは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class})
+    @AssertTrue(message = "パスワードは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class, settingPassword.class})
     private boolean isPasswordValid() {
         if (password.isBlank()) {
             return true; //パスワードが空の場合は@CheckBlankでまずバリデーションするため処理を抜ける
@@ -50,7 +51,7 @@ public class AccountForm {
         }
     }
 
-    @AssertTrue(message = "パスワードと確認用パスワードが一致しません", groups = {newAccount.class})
+    @AssertTrue(message = "パスワードと確認用パスワードが一致しません", groups = {newAccount.class, settingPassword.class})
     private boolean isSamePassword() {
         return Objects.equals(password, passCheck);
     }
