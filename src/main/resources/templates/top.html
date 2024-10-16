@@ -7,110 +7,115 @@
 </head>
 <body>
     <div th:include="header"></div>
-    <div th:if="${errorMessages != null}">
-        <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
-            <li th:text="${errorMessage}"/>
+    <div class="container">
+        <div th:if="${errorMessages != null}">
+            <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
+                <li th:text="${errorMessage}"/>
+            </div>
+            <br />
         </div>
-        <br />
-    </div>
-    <div class="notice">
-        <div th:if="${count > 0 && loginAccount.superVisor == 1}">
-            <li>[[${count}]]件の未承認の勤怠があります</li>
-        </div>
-        <div th:if="${remand > 0}">
-            <li>[[${remand}]]件の差し戻しの勤怠があります</li>
-        </div>
-    </div>
-    <form th:method="post" th:action="@{/previousMonth}">
-        <input type="submit" name="previous-month" value="前月" class="btn btn-primary">
-    </form>
-    <th:block th:text="${displayMonth} + '月'"></th:block>
-    <form th:method="post" th:action="@{/nextMonth}">
-        <input type="submit" name="next-month" value="次月">
-    </form>
-    <div th:if="${loginAccount.superVisor == 1} ">
-        <a th:href="@{approval}">
-            <input type="button" value="承認">
-        </a>
-    </div>
-    <table class="works">
-        <tr class="works-table-title">
-            <th>日付</th>
-            <th>開始</th>
-            <th>終了</th>
-            <th>休憩</th>
-            <th>メモ</th>
-            <th>ステータス</th>
-            <th>操作</th>
-        </tr>
-        <div class="works" th:each="work : ${works}">
-            <div th:if="${work.accountId == loginAccount.id}">
-            <tr>
-                <td>
-                    <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
-                </td>
-                <td>
-                    <div th:text="${#dates.format(work.workStart, 'HH:mm')}"></div>
-                </td>
-                <td>
-                    <div th:text="${#dates.format(work.workEnd, 'HH:mm')}"></div>
-                </td>
-                <td>
-                    <div th:text="${#dates.format(work.rest, 'HH:mm')}"></div>
-                </td>
-                <td>
-                    <div th:text="${work.memo}"></div>
-                </td>
-                <td>
-                    <div th:if="${work.status == 0 || work.status == 3}">
-                        <form th:method="put" th:action="@{/request/{id}(id=${work.id})}">
-                            <input type="submit" name="request-button" value="申請">
-                        </form>
-                    </div>
-                    <div th:if="${work.status == 1}">
-                        <input type="button" value="申請済み" disabled>
-                    </div>
-                    <div th:if="${work.status == 2}">
-                        <input type="button" value="承認済み" disabled>
-                    </div>
-                </td>
-                <td>
-                    <a th:href="@{/editWork/{id}(id=${work.id})}">
-                        <div th:if="${work.status == 1 || work.status == 2}">
-                            <button class="edit-work"  type="button" disabled>編集</button>
-                        </div>
-                        <div th:if="${work.status ==0 || work.status == 3}">
-                            <button class="edit-work"  type="button" >編集</button>
-                        </div>
-                    </a>
-                    <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
-                        <div th:if="${work.status == 1 || work.status == 2}">
-                            <input type="submit" name="delete-button" value="削除" disabled>
-                        </div>
-                        <div th:if="${work.status == 0 || work.status == 3}">
-                            <input type="submit" name="delete-button" value="削除" >
-                        </div>
-                    </form>
-                </td>
-            </tr>
+        <div class="notice">
+            <div th:if="${count > 0 && loginAccount.superVisor == 1}">
+                <li>[[${count}]]件の未承認の勤怠があります</li>
+            </div>
+            <div th:if="${remand > 0}">
+                <li>[[${remand}]]件の差し戻しの勤怠があります</li>
             </div>
         </div>
-    </table>
-    <hr>
-    <table class="count">
-        <tr class="count-table-title">
-            <th>出勤日数</th>
-            <th>労働時間</th>
-            <th>休憩時間</th>
-        </tr>
-        <tr>
-            <td th:text="${countDays}"></td>
-            <td th:text="${totalWorkingTime}"></td>
-            <td th:text="${totalRestTime}"></td>
-        </tr>
-    </table>
-    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script th:src="@{/js/main.js}" th:inline="javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+        <form th:method="post" th:action="@{/previousMonth}">
+            <input type="submit" name="previous-month" value="前月" class="btn btn-primary">
+        </form>
+        <th:block th:text="${displayMonth} + '月'"></th:block>
+        <form th:method="post" th:action="@{/nextMonth}">
+            <input type="submit" name="next-month" value="次月">
+        </form>
+        <div th:if="${loginAccount.superVisor == 1} ">
+            <a th:href="@{approval}">
+                <input type="button" value="承認">
+            </a>
+        </div>
+        <a th:href="@{/settingPassword/{id}(id=${loginAccount.id})}">
+            <button class="edit-password" type="button">パスワード変更</button>
+        </a>
+        <table class="works">
+            <tr class="works-table-title">
+                <th>日付</th>
+                <th>開始</th>
+                <th>終了</th>
+                <th>休憩</th>
+                <th>メモ</th>
+                <th>ステータス</th>
+                <th>操作</th>
+            </tr>
+            <div class="works" th:each="work : ${works}">
+                <div th:if="${work.accountId == loginAccount.id}">
+                <tr>
+                    <td>
+                        <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${#dates.format(work.workStart, 'HH:mm')}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${#dates.format(work.workEnd, 'HH:mm')}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${#dates.format(work.rest, 'HH:mm')}"></div>
+                    </td>
+                    <td>
+                        <div th:text="${work.memo}"></div>
+                    </td>
+                    <td>
+                        <div th:if="${work.status == 0 || work.status == 3}">
+                            <form th:method="put" th:action="@{/request/{id}(id=${work.id})}">
+                                <input type="submit" name="request-button" value="申請">
+                            </form>
+                        </div>
+                        <div th:if="${work.status == 1}">
+                            <input type="button" value="申請済み" disabled>
+                        </div>
+                        <div th:if="${work.status == 2}">
+                            <input type="button" value="承認済み" disabled>
+                        </div>
+                    </td>
+                    <td>
+                        <a th:href="@{/editWork/{id}(id=${work.id})}">
+                            <div th:if="${work.status == 1 || work.status == 2}">
+                                <button class="edit-work"  type="button" disabled>編集</button>
+                            </div>
+                            <div th:if="${work.status ==0 || work.status == 3}">
+                                <button class="edit-work"  type="button" >編集</button>
+                            </div>
+                        </a>
+                        <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
+                            <div th:if="${work.status == 1 || work.status == 2}">
+                                <input type="submit" name="delete-button" value="削除" disabled>
+                            </div>
+                            <div th:if="${work.status == 0 || work.status == 3}">
+                                <input type="submit" name="delete-button" value="削除" >
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                </div>
+            </div>
+        </table>
+        <hr>
+        <table class="count">
+            <tr class="count-table-title">
+                <th>出勤日数</th>
+                <th>労働時間</th>
+                <th>休憩時間</th>
+            </tr>
+            <tr>
+                <td th:text="${countDays}"></td>
+                <td th:text="${totalWorkingTime}"></td>
+                <td th:text="${totalRestTime}"></td>
+            </tr>
+        </table>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/js/main.js}" th:inline="javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    </div>
 </body>
 </html>
