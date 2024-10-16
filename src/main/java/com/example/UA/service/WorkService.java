@@ -280,4 +280,34 @@ public class WorkService {
         String totalWorkingTime = String.format("%02d:%02d", hours, minutes);
         return totalWorkingTime;
     }
+
+    // ログインアカウントのtopで表示している月だけの勤務情報を取得
+    public List<WorkForm> findWorksByAccountId(int id) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // 指定した月の1日目と最終日の取得
+        LocalDate LdStart = displayMonth.withDayOfMonth(1); //現在の月の1日を指す
+        LocalDate LdEnd = displayMonth.withDayOfMonth(displayMonth.lengthOfMonth()); //lengthOfMonthは月の長さを日数で返す
+        //　JpaRepositoryで処理ができるように形成
+        String startStr = LdStart + " 00:00:00";
+        String endStr = LdEnd + " 23:59:59";
+        Date start = sdf.parse(startStr);
+        Date end = sdf.parse(endStr);
+        List<Work> results = workRepository.findWorksByAccountId(id, start, end);
+        List<WorkForm> personalWorks = setWorkForm(results);
+        return personalWorks;
+    }
+
+    // 休憩時間の算出
+    public String calculateRestTime(List<WorkForm> works) {
+        Duration RestTime = Duration.ZERO;
+        for (int i = 0; i < works.size(); i++) {
+            LocalTime restTime = works.get(i).getRest().toLocalTime();
+            Duration restDuration = Duration.ofHours(restTime.getHour()).plusMinutes(restTime.getMinute());
+            RestTime = RestTime.plus(restDuration);
+        }
+        long hours = RestTime.toHours();
+        long minutes = RestTime.minusHours(hours).toMinutes();
+        String totalRestTime = String.format("%02d:%02d", hours, minutes);
+        return totalRestTime;
+    }
 }
