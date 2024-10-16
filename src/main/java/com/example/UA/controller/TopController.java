@@ -49,7 +49,7 @@ public class TopController {
             isShowAccountManage = true;
         }
         // 当月の出勤日数算出(streamAPI)
-        long count = works.stream()
+        long countDays = works.stream()
                 .filter(work -> work.getAccountId().equals(loginAccount.getId()))
                 .count();
         // 当月の労働時間算出
@@ -70,7 +70,7 @@ public class TopController {
         mav.addObject("displayMonth", workService.getDisplayMonth());
         mav.addObject("loginAccount", loginAccount);
         mav.addObject("isShowAccountManage", isShowAccountManage);
-        mav.addObject("count", count);
+        mav.addObject("countDays", countDays);
         mav.setViewName("/top");
         session.removeAttribute("errorMessages");
         return mav;
