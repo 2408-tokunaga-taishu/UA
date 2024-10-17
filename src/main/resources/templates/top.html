@@ -12,7 +12,7 @@
     <div class="container">
         <div th:if="${errorMessages != null}">
             <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
-                <li th:text="${errorMessage}"/>
+                <li th:text="${errorMessage}" class="text-danger"/>
             </div>
             <br />
         </div>
