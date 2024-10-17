@@ -39,6 +39,7 @@ public class AccountForm {
     @CheckBlank(message = "パスワードを入力してください", groups = {login.class, newAccount.class, settingPassword.class})
     private String password;
 
+    @CheckBlank(message = "パスワード(確認用)を入力してください", groups = {settingPassword.class})
     private String passCheck;
 
     private String oldPassword;
