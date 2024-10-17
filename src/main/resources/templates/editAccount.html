@@ -6,7 +6,7 @@
 </head>
 <body>
 <div th:include="header"></div>
-<div class="container">
+<div class="container d-flex flex-column align-items-center">
     <h2>アカウント編集</h2>
     <div th:if="${errorMessages != null}">
         <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
@@ -15,15 +15,15 @@
         <br />
     </div>
     <form th:method="put" th:action="@{/editAccount/{id}(id=${accountForm.id})}" th:object="${accountForm}">
-        <div class="form-area mb-3 col-sm-4">
+        <div class="form-area mb-3">
             <label class="account form-label">アカウント名</label>
             <input type="text" th:field="*{account}" class="form-control"/>
         </div>
-        <div class="mb-3 col-sm-4">
+        <div class="mb-3">
             <label class="name form-label">氏名</label>
             <input th:field="*{name}" class="form-control"/>
         </div>
-        <div class="mb-3 col-sm-4">
+        <div class="mb-3">
             <label class="group form-label">所属グループ</label>
             <select th:field="*{groupId}" class="form-select">
                 <option value="">選択してください</option>
@@ -69,14 +69,13 @@
                 <input type="hidden" th:field="*{password}">
             </div>
         </div>
-        <input type="submit" value="編集" class="btn btn-primary col-sm-4">
+        <input type="submit" value="編集" class="btn btn-primary w-100 mb-2">
+        <div class="footer-contents mb-4">
+            <a th:href="@{/accountManage}">
+                <input type="button" value="戻る" class="btn btn-outline-secondary w-100">
+            </a>
+        </div>
     </form>
-    <br />
-    <div class="footer-contents">
-        <a th:href="@{/accountManage}">
-            <input type="button" value="戻る" class="btn btn-outline-secondary">
-        </a>
-    </div>
 </div>
 </body>
 </html>

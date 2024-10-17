@@ -37,11 +37,11 @@
             <div class="right-elements d-flex ml-auto">
                 <div th:if="${loginAccount.superVisor == 1}">
                     <a th:href="@{approval}">
-                        <input type="button" value="承認" class="btn btn-outline-secondary">
+                        <input type="button" value="承認" class="btn btn-outline-primary">
                     </a>
                 </div>
                 <a th:href="@{/settingPassword/{id}(id=${loginAccount.id})}" class="mx-3">
-                    <button class="edit-password btn btn-outline-secondary" type="button">パスワード変更</button>
+                    <button class="edit-password btn btn-outline-primary" type="button">パスワード変更</button>
                 </a>
             </div>
         </div>
