@@ -1,26 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>ログイン</title>
 </head>
 <body>
-    <h1>ログイン</h1>
-    <!-- throwされたエラーに関しては上部に表示させる -->
-    <div class="errorMessage" th:if="${errorMessage}">
-        <p th:text="${errorMessage}"></p>
-    </div>
-    <form th:action="@{/login}" th:method="post" th:object="${accountForm}">
-        アカウント名
-        <input th:field="*{account}" /><br />
-        <!-- Formでアノテーションを使用したエラーは各フォームのすぐ下に表示 -->
-        <div class="errorMessage" th:errors="*{account}" />
-        <br />
-        パスワード
-        <input th:field="*{password}" type="password" /><br />
-        <div class="errorMessage" th:errors="*{password}" />
-        <br />
-        <input type="submit" value="ログイン" />
-    </form>
+<div class="container w-25">
+    <main class="form-signin">
+        <form th:action="@{/login}" th:method="post" th:object="${accountForm}" class="my-5">
+            <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
+            <h1 class="h3 mb-3 fw-normal">ログイン</h1>
+            <!-- throwされたエラーに関しては上部に表示させる -->
+            <div class="errorMessage" th:if="${errorMessage}">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <div class="form-floating">
+                <input th:field="*{account}" class="form-control" id="floatingInput">
+                <label for="floatingInput">アカウント名</label>
+                <div class="errorMessage" th:errors="*{account}" />
+            </div>
+            <div class="form-floating">
+                <input th:field="*{password}" type="password" class="form-control" id="floatingPassword">
+                <label for="floatingPassword">パスワード</label>
+                <div class="errorMessage" th:errors="*{password}" />
+            </div>
+            <button class="btn btn-primary w-100 py-2 my-2" type="submit">ログイン</button>
+        </form>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 </body>
 </html>
