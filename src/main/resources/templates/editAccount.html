@@ -15,73 +15,66 @@
         <br />
     </div>
     <form th:method="put" th:action="@{/editAccount/{id}(id=${accountForm.id})}" th:object="${accountForm}">
-        <div class="form-area">
-            <div class="account">
-                アカウント名
-                <input type="text" th:field="*{account}" /><br/>
+        <div class="form-area mb-3 col-sm-4">
+            <label class="account form-label">アカウント名</label>
+            <input type="text" th:field="*{account}" class="form-control"/>
+        </div>
+        <div class="mb-3 col-sm-4">
+            <label class="name form-label">氏名</label>
+            <input th:field="*{name}" class="form-control"/>
+        </div>
+        <div class="mb-3 col-sm-4">
+            <label class="group form-label">所属グループ</label>
+            <select th:field="*{groupId}" class="form-select">
+                <option value="">選択してください</option>
+                <option th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="supervisor form-check-label">承認者権限</label>
+            <div>
+                <input type="radio" name="option" value="0" th:field="*{superVisor}" th:checked="${accountForm.superVisor == '0'}"> 無
             </div>
-            <br />
-            <div class="name">
-                氏名
-                <input th:field="*{name}" /><br/>
+            <div>
+                <input type="radio" name="option" value="1" th:field="*{superVisor}" th:checked="${accountForm.superVisor == '1'}"> 有
             </div>
-            <br />
-            <div class="group">
-                所属グループ
-                <select th:field="*{groupId}">
-                    <option value="">選択してください</option>
-                    <option th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}"></option>
-                </select>
-            </div>
-            <br />
-            <div class="supervisor">
-                承認者権限
-                <div>
-                    <input type="radio" name="option" value="0" th:field="*{superVisor}" th:checked="${accountForm.superVisor == '0'}"> 無
-                </div>
-                <div>
-                    <input type="radio" name="option" value="1" th:field="*{superVisor}" th:checked="${accountForm.superVisor == '1'}"> 有
-                </div>
-            </div>
-            <br />
+        </div>
+        <div class="mb-3">
             <!-- ログインしているユーザ自身は管理者権限を編集できないようdisabledオプションを設定 -->
             <div th:if="${loginAccount.id == accountForm.id}">
-                <div class="admin">
-                    管理者権限
+                <label class="admin form-check-label">管理者権限</label>
                     <div>
                         <input type="radio" name="option" value="0" th:field="*{admin}" th:checked="${accountForm.admin == '0'}" disabled> 無
                     </div>
                     <div>
                         <input type="radio" name="option" value="1" th:field="*{admin}" th:checked="${accountForm.admin == '1'}" disabled> 有
                     </div>
-                </div>
             </div>
             <!-- ログインユーザ以外のデータを変更する場合以下を表示 -->
             <div th:if="${loginAccount.id != accountForm.id}">
-                <div class="admin">
-                    管理者権限
-                    <div>
-                        <input type="radio" name="option" value="0" th:field="*{admin}" th:checked="${accountForm.admin == '0'}"> 無
-                    </div>
-                    <div>
-                        <input type="radio" name="option" value="1" th:field="*{admin}" th:checked="${accountForm.admin == '1'}"> 有
-                    </div>
+                <label class="admin form-check-label">管理者権限</label>
+                <div>
+                    <input type="radio" name="option" value="0" th:field="*{admin}" th:checked="${accountForm.admin == '0'}"> 無
+                </div>
+                <div>
+                    <input type="radio" name="option" value="1" th:field="*{admin}" th:checked="${accountForm.admin == '1'}"> 有
                 </div>
             </div>
         </div>
-        <div class="isStopped">
-            <input type="hidden" th:field="*{isStopped}">
+        <div class="mb-3">
+            <div class="isStopped">
+                <input type="hidden" th:field="*{isStopped}">
+            </div>
+            <div class="Password">
+                <input type="hidden" th:field="*{password}">
+            </div>
         </div>
-        <div class="Password">
-            <input type="hidden" th:field="*{password}">
-        </div>
-        <br />
-        <input type="submit" value="編集">
+        <input type="submit" value="編集" class="btn btn-primary col-sm-4">
     </form>
     <br />
     <div class="footer-contents">
         <a th:href="@{/accountManage}">
-            <input type="button" value="戻る">
+            <input type="button" value="戻る" class="btn btn-outline-secondary">
         </a>
     </div>
 </div>
