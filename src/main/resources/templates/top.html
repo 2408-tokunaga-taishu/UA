@@ -17,12 +17,9 @@
             <br />
         </div>
         <div class="notice">
-            <div th:if="${count > 0 && loginAccount.superVisor == 1}">
-                <li>[[${count}]]件の未承認の勤怠があります</li>
-            </div>
             <div th:if="${remand > 0}">
                 <li>[[${remand}]]件の差し戻しの勤怠があります</li>
-            </div>
+            </div><br>
         </div>
         <div class="d-flex justify-content-between pb-3">
             <div class="left-elements d-flex">
@@ -37,7 +34,14 @@
             <div class="right-elements d-flex ml-auto">
                 <div th:if="${loginAccount.superVisor == 1}">
                     <a th:href="@{approval}">
-                        <input type="button" value="承認" class="btn btn-outline-secondary">
+                        <button  type="button"  class="btn btn-outline-primary position-relative">承認
+                            <div th:if="${count > 0}">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                     [[${count}]]
+                                     <span class="visually-hidden">unread messages</span>
+                                </span>
+                            </div>
+                        </button>
                     </a>
                 </div>
                 <a th:href="@{/settingPassword/{id}(id=${loginAccount.id})}" class="mx-3">
