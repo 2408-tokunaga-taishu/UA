@@ -1,42 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
     <head>
+        <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
         <meta charset="UTF-8">
         <title>新規追加</title>
     </head>
     <body>
+    <div class="container">
         <div th:include="header"></div>
-        <h2>新規追加</h2>
         <div th:if="${errorMessages != null}">
             <div class="new-errorMessages" th:each="errorMessage : ${errorMessages}">
-                <li th:text="${errorMessage}"/><br>
+                <li th:text="${errorMessage}"/>
+                <br>
             </div>
         </div>
-        <div class="work-form">
-            <form th:action="@{/addWork}" th:object="${workForm}" method="post">
-                <div class="new-date">日付
-                    <input type="date" th:field="*{strDate}" >
+        <table class="table">
+            <tr class="approval-table-title">
+                <th>日付</th>
+                <th>勤務開始時間</th>
+                <th>勤務終了時間</th>
+                <th>休憩開始時間</th>
+                <th>休憩終了時間</th>
+                <th>メモ</th>
+            </tr>
+            <tr>
+                <div class="work-form">
+                    <div class="d-flex">
+                        <form th:action="@{/addWork}" th:object="${workForm}" method="post">
+                            <td>
+                                <div class="form-group">
+                                    <input type="date" id="strDate" th:field="*{strDate}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="time" th:field="*{strWorkStart}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="time" th:field="*{strWorkEnd}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="time" th:field="*{strRestStart}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="time" th:field="*{strRestEnd}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input class="form-control" type="text" th:field="*{memo}">
+                                </div>
+                            </td>
+                            <td>
+                                <input class="btn btn-outline-primary btn-block" type="submit" value="追加">
+                            </td>
+                        </form>
+                    </div>
                 </div>
-                <div class="new-start-time">勤務開始時間
-                    <input type="time" th:field="*{strWorkStart}">
-                </div>
-                <div class="new-end-time">勤務終了時間
-                    <input type="time" th:field="*{strWorkEnd}">
-                </div>
-                <div class="new-rest-start">休憩開始時間
-                    <input type="time" th:field="*{strRestStart}">
-                </div>
-                <div class="new-rest-end">休憩終了時間
-                    <input type="time" th:field="*{strRestEnd}" >
-                </div>
-                <div class="memo">メモ
-                    <input type="text" th:field="*{memo}" >
-                </div>
-                <input type="submit" value="追加">
-            </form>
-        </div>
-        <a th:href="@{/}">
-            <input type="button" value="戻る">
-        </a>
+            </tr>
+            </table>
+            <br>
+            <a th:href="@{/}">
+                <input class="btn btn-primary" type="button" value="戻る">
+            </a>
     </body>
 </html>
