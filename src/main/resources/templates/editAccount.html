@@ -49,6 +49,7 @@
                     <div>
                         <input type="radio" name="option" value="1" th:field="*{admin}" th:checked="${accountForm.admin == '1'}" disabled> 有
                     </div>
+                <input type="hidden" th:field="*{admin}">
             </div>
             <!-- ログインユーザ以外のデータを変更する場合以下を表示 -->
             <div th:if="${loginAccount.id != accountForm.id}">
