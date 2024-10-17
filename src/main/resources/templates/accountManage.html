@@ -15,73 +15,79 @@
             <br />
         </div>
         <a th:href="@{/newAccount}">
-            <button class="new-account" type="button">アカウント新規作成</button>
+            <button class="new-account btn btn-primary my-4" type="button">アカウント新規作成</button>
         </a>
+        <table class="table accounts">
+            <thead class="table-light">
+                <tr class="accountsTableTitle">
+                    <th>アカウント名</th>
+                    <th>氏名</th>
+                    <th>所属グループ</th>
+                    <th>アカウント稼働状態</th>
+                    <th>承認者権限</th>
+                    <th>管理者権限</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <div th:each="a : ${accounts}">
+                    <tr>
+                        <td>
+                            <p th:text="${a.account}" />
+                        </td>
+                        <td>
+                            <p th:text="${a.name}" />
+                        </td>
+                        <td>
+                            <p th:text="${a.groupName}" />
+                        </td>
+                        <td>
+                            <th:block th:switch="${a.isStopped}">
+                                <span th:case=0 th:text="稼働中" />
+                                <span th:case=1 th:text="停止中" />
+                            </th:block>
+                        </td>
+                        <td>
+                            <th:block th:switch="${a.superVisor}">
+                                <span th:case=0 th:text="無" />
+                                <span th:case=1 th:text="有" />
+                            </th:block>
+                        </td>
+                        <td>
+                            <th:block th:switch="${a.admin}">
+                                <span th:case=0 th:text="無" />
+                                <span th:case=1 th:text="有" />
+                            </th:block>
+                        </td>
+                        <td>
+                            <div th:if="${loginAccount.id != a.id}">
+                                <div th:if="${a.isStopped == 0}">
+                                    <form th:method="put" th:action="@{/{id}(id=${a.id})}">
+                                        <input type="submit" value="停止" name="isStopped-button" class="off btn btn-danger">
+                                    </form>
+                                </div>
+                                <div th:if="${a.isStopped == 1}">
+                                    <form th:method="put" th:action="@{/{id}(id=${a.id})}">
+                                        <input type="submit" value="復活" name="isStopped-button" class="on btn btn-success">
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <a th:href="@{/editAccount/{id}(id=${a.id})}">
+                                <button class="edit-account btn btn-secondary" type="button">編集</button>
+                            </a>
+                        </td>
+                    </tr>
+                </div>
+            </tbody>
+        </table>
         <div>
             <a th:href="@{/top}">
-                <input type="button" value="戻る">
+                <input type="button" value="戻る" class="btn btn-outline-secondary">
             </a>
-        </div><br>
-        <table class="accounts">
-            <tr class="accountsTableTitle">
-                <th>アカウント名</th>
-                <th>氏名</th>
-                <th>所属グループ</th>
-                <th>アカウント稼働状態</th>
-                <th>承認者権限</th>
-                <th>管理者権限</th>
-            </tr>
-            <div th:each="a : ${accounts}">
-                <tr>
-                    <td>
-                        <p th:text="${a.account}" />
-                    </td>
-                    <td>
-                        <p th:text="${a.name}" />
-                    </td>
-                    <td>
-                        <p th:text="${a.groupName}" />
-                    </td>
-                    <td>
-                        <th:block th:switch="${a.isStopped}">
-                            <span th:case=0 th:text="稼働中" />
-                            <span th:case=1 th:text="停止中" />
-                        </th:block>
-                    </td>
-                    <td>
-                        <th:block th:switch="${a.superVisor}">
-                            <span th:case=0 th:text="無" />
-                            <span th:case=1 th:text="有" />
-                        </th:block>
-                    </td>
-                    <td>
-                        <th:block th:switch="${a.admin}">
-                            <span th:case=0 th:text="無" />
-                            <span th:case=1 th:text="有" />
-                        </th:block>
-                    </td>
-                    <td>
-                        <div th:if="${loginAccount.id != a.id}">
-                            <div th:if="${a.isStopped == 0}">
-                                <form th:method="put" th:action="@{/{id}(id=${a.id})}">
-                                    <input type="submit" value="停止" name="isStopped-button" class="off">
-                                </form>
-                            </div>
-                            <div th:if="${a.isStopped == 1}">
-                                <form th:method="put" th:action="@{/{id}(id=${a.id})}">
-                                    <input type="submit" value="復活" name="isStopped-button" class="on">
-                                </form>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <a th:href="@{/editAccount/{id}(id=${a.id})}">
-                            <button class="edit-account" type="button">編集</button>
-                        </a>
-                    </td>
-                </tr>
-            </div>
-        </table>
+        </div>
         <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
         <script th:src="@{/js/main.js}"></script>
     </div>
