@@ -4,7 +4,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>ホーム</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <div class="container">
@@ -60,7 +60,12 @@
             <tbody>
                 <div class="works" th:each="work : ${works}">
                     <div th:if="${work.accountId == loginAccount.id}">
-                    <tr>
+                    <div th:if="${work.status == 3}">
+                        <tr class="table-danger" >
+                    </div>
+                    <div th:unless="${work.status == 3}">
+                        <tr>
+                    </div>
                         <td>
                             <div th:text="${#dates.format(work.date, 'yyyy/MM/dd')}"></div>
                         </td>
@@ -79,33 +84,35 @@
                         <td>
                             <div th:if="${work.status == 0 || work.status == 3}">
                                 <form th:method="put" th:action="@{/request/{id}(id=${work.id})}">
-                                    <input type="submit" name="request-button" value="申請">
+                                    <input class="btn btn-outline-primary btn-block" type="submit" name="request-button" value="申請">
                                 </form>
                             </div>
                             <div th:if="${work.status == 1}">
-                                <input type="button" value="申請済み" disabled>
+                                <input class="btn btn-secondary" type="button" value="申請済み" disabled>
                             </div>
                             <div th:if="${work.status == 2}">
-                                <input type="button" value="承認済み" disabled>
+                                <input class="btn btn-secondary" type="button" value="承認済み" disabled>
                             </div>
                         </td>
                         <td>
-                            <a th:href="@{/editWork/{id}(id=${work.id})}">
-                                <div th:if="${work.status == 1 || work.status == 2}">
-                                    <button class="edit-work"  type="button" disabled>編集</button>
-                                </div>
-                                <div th:if="${work.status ==0 || work.status == 3}">
-                                    <button class="edit-work"  type="button" >編集</button>
-                                </div>
-                            </a>
-                            <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
-                                <div th:if="${work.status == 1 || work.status == 2}">
-                                    <input type="submit" name="delete-button" value="削除" disabled>
-                                </div>
-                                <div th:if="${work.status == 0 || work.status == 3}">
-                                    <input type="submit" name="delete-button" value="削除" >
-                                </div>
-                            </form>
+                            <div class="d-flex">
+                                <form th:action="@{/editWork/{id}(id=${work.id})}">
+                                    <div th:if="${work.status == 1 || work.status == 2}">
+                                        <input class="btn btn-secondary"  type="submit" value="編集" disabled>
+                                    </div>
+                                    <div th:if="${work.status ==0 || work.status == 3}">
+                                        <input class="btn btn-outline-primary btn-block"  type="submit" value="編集" >
+                                    </div>
+                                </form>
+                                <form th:method="delete" th:action="@{/deleteWork/{id}(id=${work.id})}">
+                                    <div th:if="${work.status == 1 || work.status == 2}">
+                                        <input class="btn btn-secondary" type="submit" name="delete-button" value="削除" disabled>
+                                    </div>
+                                    <div th:if="${work.status == 0 || work.status == 3}">
+                                        <input class="btn btn-outline-primary btn-block" type="submit" name="delete-button" value="削除" >
+                                    </div>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     </div>

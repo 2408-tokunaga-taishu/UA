@@ -5,3 +5,10 @@
 .card {
         margin-bottom: 30px;
 }
+
+.btn-default >.badge-notify{
+   background:red;
+   position:relative;
+   top: 7px;
+   left: -62px;
+}
