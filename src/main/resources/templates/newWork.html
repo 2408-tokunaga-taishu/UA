@@ -9,7 +9,7 @@
         <h2>新規追加</h2>
         <div th:if="${errorMessages != null}">
             <div class="new-errorMessages" th:each="errorMessage : ${errorMessages}">
-                <li th:text="${errorMessage}"/><br>
+                <li th:text="${errorMessage}" class="text-danger"/><br>
             </div>
         </div>
         <div class="work-form">

@@ -14,17 +14,17 @@
             <h1 class="h3 mb-3 fw-normal">ログイン</h1>
             <!-- throwされたエラーに関しては上部に表示させる -->
             <div class="errorMessage" th:if="${errorMessage}">
-                <p th:text="${errorMessage}"></p>
+                <p th:text="${errorMessage}" class="text-danger"></p>
             </div>
             <div class="form-floating">
                 <input th:field="*{account}" class="form-control" id="floatingInput">
                 <label for="floatingInput">アカウント名</label>
-                <div class="errorMessage" th:errors="*{account}" />
+                <div class="errorMessage text-danger" th:errors="*{account}" />
             </div>
             <div class="form-floating">
                 <input th:field="*{password}" type="password" class="form-control" id="floatingPassword">
                 <label for="floatingPassword">パスワード</label>
-                <div class="errorMessage" th:errors="*{password}" />
+                <div class="errorMessage text-danger" th:errors="*{password}" />
             </div>
             <button class="btn btn-primary w-100 py-2 my-2" type="submit">ログイン</button>
         </form>
