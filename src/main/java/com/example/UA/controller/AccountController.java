@@ -73,7 +73,7 @@ public class AccountController {
         // セッションに値をセット
         session.setAttribute("loginAccount", accountData);
         // topにリダイレクト
-        mav.setViewName("redirect:/top");
+        mav.setViewName("redirect:/");
         return mav;
     }
 
