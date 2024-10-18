@@ -71,6 +71,7 @@ public class TopController {
         mav.addObject("errorMessages", session.getAttribute("errorMessages"));
         mav.addObject("works", works);
         mav.addObject("displayMonth", workService.getDisplayMonth());
+        mav.addObject("displayYear", workService.getDisplayYear());
         mav.addObject("loginAccount", loginAccount);
         mav.addObject("isShowAccountManage", isShowAccountManage);
         mav.addObject("countDays", countDays);

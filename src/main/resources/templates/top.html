@@ -30,7 +30,8 @@
                 <form th:method="post" th:action="@{/previousMonth}">
                     <input type="submit" name="previous-month" value="前月" class="btn btn-outline-secondary">
                 </form>
-                <div th:text="${displayMonth} + '月'" class="mx-2 h3"></div>
+                <div th:text="${displayYear} + '年'" class="mx-2 h3" />
+                <div th:text="${displayMonth} + '月'" class="mx-2 h3" />
                 <form th:method="post" th:action="@{/nextMonth}">
                     <input type="submit" name="next-month" value="次月" class="btn btn-outline-secondary">
                 </form>
