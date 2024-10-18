@@ -38,7 +38,7 @@ public class TopController {
     /*
      * ホーム画面表示
      */
-    @GetMapping({"/top", "/"})
+    @GetMapping({"/"})
     public ModelAndView top() throws ParseException {
         ModelAndView mav = new ModelAndView();
         List<WorkForm> works = workService.findAllWorks();
@@ -69,7 +69,6 @@ public class TopController {
         mav.addObject("remand", remand);
 //        エラーメッセージをSessionから取得
         mav.addObject("errorMessages", session.getAttribute("errorMessages"));
-
         mav.addObject("works", works);
         mav.addObject("displayMonth", workService.getDisplayMonth());
         mav.addObject("loginAccount", loginAccount);
@@ -87,7 +86,7 @@ public class TopController {
     public ModelAndView previousMonth() throws ParseException {
         ModelAndView mav = new ModelAndView();
         workService.changeMonth(-1);
-        mav.setViewName("redirect:/top");
+        mav.setViewName("redirect:/");
         return mav;
     }
 
@@ -98,7 +97,7 @@ public class TopController {
     public ModelAndView nextMonth() {
         ModelAndView mav = new ModelAndView();
         workService.changeMonth(1);
-        mav.setViewName("redirect:/top");
+        mav.setViewName("redirect:/");
         return mav;
     }
 
@@ -109,8 +108,8 @@ public class TopController {
     public ModelAndView settingPassword (@PathVariable String id, RedirectAttributes redirectAttributes) {
         // URLの数字チェック
         if (!id.matches("^[0-9]*$")) {
-            redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
-            return new ModelAndView("redirect:/top");
+            redirectAttributes.addFlashAttribute("passErrorMessages", "不正なパラメータです");
+            return new ModelAndView("redirect:/");
         }
         ModelAndView mav = new ModelAndView();
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
@@ -125,8 +124,8 @@ public class TopController {
             return mav;
         } catch (Exception e) {
             // idが存在しない値、もしくはログインしているアカウント以外の存在するアカウントのページを開いた場合
-            redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
-            return new ModelAndView("redirect:/top");
+            redirectAttributes.addFlashAttribute("passErrorMessages", "不正なパラメータです");
+            return new ModelAndView("redirect:/");
         }
     }
     /*
@@ -134,8 +133,8 @@ public class TopController {
      */
     @GetMapping({"/settingPassword", "/settingPassword/"})
     public ModelAndView noIdSettingPassword (RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
-        return new ModelAndView("redirect:/top");
+        redirectAttributes.addFlashAttribute("passErrorMessages", "不正なパラメータです");
+        return new ModelAndView("redirect:/");
     }
 
     /*
@@ -171,7 +170,7 @@ public class TopController {
             // パスワード暗号化
             editAccount.setPassword(CipherUtil.encrypt(accountForm.getPassword()));
             accountService.saveAccount(editAccount);
-            mav.setViewName("redirect:/top");
+            mav.setViewName("redirect:/");
 
         }
         return mav;
