@@ -54,6 +54,9 @@ public class Work {
     @Column(name="updated_date", insertable = false)
     private Date updatedDate;
 
+    @Column(name = "remand_text", insertable = false, updatable = false)
+    private String remandText;
+
     @ManyToOne
     @JoinColumn(name = "account_id", insertable = false, updatable = false)
     private Account account;

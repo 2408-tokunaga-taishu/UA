@@ -49,10 +49,31 @@
                                                 </form>
                                             </div>
                                             <div class="col-5">
-                                                <form th:action="@{/remand/{id}(id = ${work.id})}" th:method="put">
-                                                    <input class="btn btn-outline-primary btn-block" name="remand-button"
-                                                           type="submit" value="差し戻し">
-                                                </form>
+                                                <button type="button" class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">差し戻し</button>
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">差し戻し理由を入力してください。</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form th:action="@{/remand/{id}(id = ${work.id})}" th:method="put">
+                                                            <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <label for="remandText" class="col-form-label">差し戻し理由:</label>
+                                                                        <input type="text" class="form-control" id="remandText" name="remandText">
+                                                                    </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+
+                                                                    <input class="btn btn-outline-primary btn-block" name="remand-button"
+                                                                           type="submit" value="確定">
+                                                            </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>

@@ -18,7 +18,7 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
     public List<Work> findByStartAndEnd(@Param("start") Date start, @Param("end") Date end);
 
     @Modifying
-    @Query("UPDATE Work  SET status = 1, updatedDate = :Date WHERE id = :id")
+    @Query("UPDATE Work  SET status = 1, updatedDate = :Date, remandText = null WHERE id = :id")
     void saveStatus(@Param("id") int id, @Param("Date") Date Date);
 //　申請済み勤怠数取得
     @Query("SELECT COUNT (w)  FROM Work w WHERE date BETWEEN :start AND :end AND groupId = :groupId AND status = 1")
@@ -35,8 +35,8 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
     void approval(@Param("id") int id, @Param("Date") Date date);
 //  勤怠のstatus差し戻しに変更
     @Modifying
-    @Query("UPDATE Work  SET status = 3, updatedDate = :Date WHERE id = :id")
-    void remand(@Param("id") int id, @Param("Date") Date date);
+    @Query("UPDATE Work  SET status = 3, updatedDate = :Date, remandText = :remandText WHERE id = :id")
+    void remand(@Param("id") int id, @Param("Date") Date date, @Param("remandText") String remandText);
 
     // 個人別の勤怠集計
     @Query("SELECT w FROM Work w WHERE w.accountId = :accountId AND w.date BETWEEN :start AND :end")

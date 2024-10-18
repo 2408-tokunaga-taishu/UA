@@ -78,6 +78,7 @@ public class WorkService {
             workForm.setStatus(work.getStatus());
             workForm.setGroupId(work.getGroupId());
             workForm.setAccountId(work.getAccountId());
+            workForm.setRemandText(work.getRemandText());
             works.add(workForm);
         }
         return works;
@@ -259,9 +260,9 @@ public class WorkService {
         workRepository.approval(id, Date);
     }
 
-    public void remand(int id) {
+    public void remand(int id, String remandText) {
         Date Date = new Date();
-        workRepository.remand(id, Date);
+        workRepository.remand(id, Date, remandText);
     }
 
     public String calculateWorkingTime(List<WorkForm> works) {

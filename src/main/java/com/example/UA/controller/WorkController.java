@@ -116,9 +116,9 @@ public class WorkController {
     }
 //    勤怠の差し戻し
     @PutMapping("/remand/{id}")
-    public ModelAndView remand(@PathVariable int id) {
+    public ModelAndView remand(@PathVariable int id, @ModelAttribute("remandText") String remandText) {
         ModelAndView mav = new ModelAndView();
-        workService.remand(id);
+        workService.remand(id, remandText);
         mav.setViewName("redirect:/approval");
         return mav;
     }

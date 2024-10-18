@@ -104,4 +104,6 @@ public class WorkForm {
 
     private Date updatedDate;
 
+    private String remandText;
+
 }
