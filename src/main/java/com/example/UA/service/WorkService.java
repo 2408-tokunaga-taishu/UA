@@ -64,6 +64,10 @@ public class WorkService {
     public int getDisplayMonth() {
         return displayMonth.getMonthValue();
     }
+    /*
+     * 年表示
+     */
+    public int getDisplayYear() { return displayMonth.getYear(); }
 
     private List<WorkForm> setWorkForm(List<Work> results) {
         List<WorkForm> works = new ArrayList<>();
