@@ -30,6 +30,13 @@ public class WorkController {
     @GetMapping("/newWork")
     public ModelAndView newWork(@ModelAttribute("workForm") WorkForm workForm) {
         ModelAndView mav = new ModelAndView();
+        AccountForm loginAccount = (AccountForm) session.getAttribute("loginAccount");
+        //　アカウント管理画面表示フラグ
+        boolean isShowAccountManage = false;
+        if (loginAccount.getAdmin() == 1) {
+            isShowAccountManage = true;
+        }
+        mav.addObject("isShowAccountManage", isShowAccountManage);
         mav.setViewName("/newWork");
         mav.addObject("workForm", workForm);
         return mav;
@@ -61,7 +68,14 @@ public class WorkController {
     @GetMapping("/editWork/{id}")
     public ModelAndView edit(@PathVariable int id) {
         ModelAndView mav = new ModelAndView();
+        AccountForm loginAccount = (AccountForm) session.getAttribute("loginAccount");
         WorkForm work = workService.findWork(id);
+        //　アカウント管理画面表示フラグ
+        boolean isShowAccountManage = false;
+        if (loginAccount.getAdmin() == 1) {
+            isShowAccountManage = true;
+        }
+        mav.addObject("isShowAccountManage", isShowAccountManage);
         mav.setViewName("/editWork");
         mav.addObject("work", work);
         return mav;

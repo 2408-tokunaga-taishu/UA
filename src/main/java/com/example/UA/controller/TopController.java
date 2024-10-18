@@ -182,8 +182,15 @@ public class TopController {
         ModelAndView mav = new ModelAndView();
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
         Map<String, List<AccountWorkForm>> accountWorkForms = workService.findGroupWork(loginAccount.getGroupId());
+        //　アカウント管理画面表示フラグ
+        boolean isShowAccountManage = false;
+        if (loginAccount.getAdmin() == 1) {
+            isShowAccountManage = true;
+        }
+        mav.addObject("isShowAccountManage", isShowAccountManage);
         mav.setViewName("/approval");
         mav.addObject("accountWorkForms",accountWorkForms);
+
         return mav;
     }
 }
