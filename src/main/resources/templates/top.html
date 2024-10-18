@@ -10,10 +10,14 @@
     <div class="container">
     <div th:include="header"></div>
     <div class="container">
-        <div th:if="${errorMessages != null}">
+        <div class="errorMessages" th:if="${errorMessages != null}">
             <div class="errorMessages" th:each="errorMessage : ${errorMessages} ">
                 <li th:text="${errorMessage}" class="text-danger"/>
             </div>
+            <br />
+        </div>
+        <div class="passErrorMessages" th:if="${passErrorMessages != null}">
+                <li th:text="${passErrorMessages}" class="text-danger"/>
             <br />
         </div>
         <div class="notice">
