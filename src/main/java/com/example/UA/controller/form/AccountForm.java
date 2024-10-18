@@ -39,6 +39,7 @@ public class AccountForm {
     @CheckBlank(message = "パスワードを入力してください", groups = {login.class, newAccount.class, settingPassword.class})
     private String password;
 
+    @CheckBlank(message = "パスワード(確認用)を入力してください", groups = {settingPassword.class, newAccount.class})
     private String passCheck;
 
     private String oldPassword;
@@ -55,7 +56,11 @@ public class AccountForm {
 
     @AssertTrue(message = "パスワードと確認用パスワードが一致しません", groups = {newAccount.class, settingPassword.class})
     private boolean isSamePassword() {
-        return Objects.equals(password, passCheck);
+        if (password.isBlank() || passCheck.isBlank()) {
+            return true;
+        } else {
+            return Objects.equals(password, passCheck);
+        }
     }
 
 
