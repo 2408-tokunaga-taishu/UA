@@ -30,4 +30,15 @@ public class FilterConfig {
         bean.setOrder(2);
         return bean;
     }
+
+    @Bean
+    public FilterRegistrationBean<SuperVisorFilter> superVisorFilter() {
+        FilterRegistrationBean<SuperVisorFilter> bean = new FilterRegistrationBean<>();
+
+        bean.setFilter(new SuperVisorFilter());
+
+        bean.addUrlPatterns("/approval");
+        bean.setOrder(2);
+        return bean;
+    }
 }
