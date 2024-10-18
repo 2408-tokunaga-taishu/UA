@@ -54,7 +54,7 @@ public class WorkForm {
         LocalTime startTime = LocalTime.parse(strWorkStart, DateTimeFormatter.ofPattern("HH:mm"));
         LocalTime endTime = LocalTime.parse(strWorkEnd, DateTimeFormatter.ofPattern("HH:mm"));
         Duration duration = Duration.between(startTime, endTime);
-        return duration.getSeconds() > 0;
+        return duration.getSeconds() >= 0;
         }
     }
 
@@ -85,6 +85,29 @@ public class WorkForm {
             return false;
         } else {
             return true;
+        }
+    }
+
+    @AssertTrue(message = "休憩時間が勤務時間外に設定されています")
+    public  boolean isRest() {
+        if (isBlank(strRestStart) || isBlank(strRestEnd) || isBlank(strWorkStart) || isBlank(strWorkEnd)) {
+            return true;
+        } else {
+            LocalTime restStartTime = LocalTime.parse(strRestStart, DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime restEndTime = LocalTime.parse(strRestEnd, DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime startTime = LocalTime.parse(strWorkStart, DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime endTime = LocalTime.parse(strWorkEnd, DateTimeFormatter.ofPattern("HH:mm"));
+            Duration startduration = Duration.between(startTime, restStartTime);
+            Duration endduration = Duration.between(restEndTime, endTime);
+            if (startduration.getSeconds() >= 0) {
+                if (endduration.getSeconds() >= 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
     }
 
