@@ -31,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                <div th:each="a : ${accounts}">
+                <div th:each="a : ${showAccounts}">
                     <tr>
                         <td>
                             <p th:text="${a.account}" />
@@ -83,6 +83,34 @@
                 </div>
             </tbody>
         </table>
+        <!-- ここからページング -->
+        <nav>
+            <ul class="pagination pg-blue justify-content-center">
+                <li th:if="${startPage} > 1" class="page-item">
+                    <a class="page-link" th:href="@{'/accountManage?page=1'}" tabindex="-2">最初</a>
+                </li>
+                <li th:if="${page} > 1" class="page-item">
+                    <a class="page-link" th:href="@{'/accountManage?page=' + ${page-1}}" tabindex="-1">前へ</a>
+                </li>
+                <th:block th:if="${endPage} <= 0">
+                    <li class="page-item" th:classappend="${i == page} ? active" th:each="i : ${startPage}">
+                        <a class="page-link" th:href="@{'/accountManage?page=' + ${i}}" th:text="${i}"></a>
+                    </li>
+                </th:block>
+                <!-- StartPageからEndPageまでのページ数を表示する -->
+                <th:block th:if="${endPage} > 0">
+                    <li class="page-item" th:classappend="${i == page} ? active" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                        <a class="page-link" th:href="@{'/accountManage?page=' + ${i}}" th:text="${i}"></a>
+                    </li>
+                </th:block>
+                <li th:if="${page} < ${totalPage}" class="page-item">
+                    <a class="page-link" th:href="@{'/accountManage?page=' + ${page + 1}}">次へ</a>
+                </li>
+                <li th:if="${endPage} < ${totalPage}" class="page-item">
+                    <a class="page-link" th:href="@{'/accountManage=' + ${totalPage}}">最後</a>
+                </li>
+            </ul>
+        </nav>
         <div>
             <a th:href="@{/}">
                 <input type="button" value="戻る" class="btn btn-outline-secondary">
