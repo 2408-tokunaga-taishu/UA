@@ -104,8 +104,9 @@ public class AccountController {
      */
     @GetMapping("/accountManage")
     public ModelAndView accountManage(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
+        // paramsのvalueの値チェック
         for (String value : params.values()) {
-            if(!value.matches("^[0-9]*$")) {
+            if(value.isBlank() || !value.matches("^[0-9]*$")) {
                 redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
                 return new ModelAndView("redirect:/accountManage");
             }
@@ -130,6 +131,13 @@ public class AccountController {
         // ページネーション処理
         // 総数/1ページの表示数 から総ページ数を割り出す
         int totalPage = (total + Integer.parseInt(limit) -1)/ Integer.parseInt(limit);
+        // パラメータに入力された数値が総ページ数よりも大きい場合のエラー処理
+        for (String value : params.values()) {
+            if(Integer.parseInt(value) > totalPage) {
+                redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+                return new ModelAndView("redirect:/accountManage");
+            }
+        }
         int page = Integer.parseInt(currentPage);
         // 表示する最初のページ番号を算出
         int startPage = page - (page - 1) % showPageSize;
