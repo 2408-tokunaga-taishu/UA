@@ -104,6 +104,12 @@ public class AccountController {
      */
     @GetMapping("/accountManage")
     public ModelAndView accountManage(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
+        for (String value : params.values()) {
+            if(!value.matches("^[0-9]*$")) {
+                redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+                return new ModelAndView("redirect:/accountManage");
+            }
+        }
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/accountManage");
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
