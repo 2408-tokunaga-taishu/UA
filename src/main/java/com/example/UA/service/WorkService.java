@@ -2,13 +2,21 @@ package com.example.UA.service;
 
 import com.example.UA.controller.form.AccountForm;
 import com.example.UA.controller.form.AccountWorkForm;
+import com.example.UA.controller.form.WorkCSVForm;
 import com.example.UA.controller.form.WorkForm;
 import com.example.UA.repository.WorkRepository;
 import com.example.UA.repository.entity.Work;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.csv.CsvGenerator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import org.hibernate.validator.internal.util.logging.formatter.DurationFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Member;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -320,6 +328,34 @@ public class WorkService {
         String totalRestTime = String.format("%02d:%02d", hours, minutes);
         return totalRestTime;
     }
+
+    /*
+     * csvを作成
+     */
+    public String findCSVWorksByAccountId(int id) throws ParseException {
+        // 途中までの処理はservice内のfindWorksByAccountIdと同じ
+        List<WorkForm> results = findWorksByAccountId(id);
+        String personalWorks = setWorkCSVForm(results);
+        return personalWorks;
+    }
+
+    private String setWorkCSVForm(List<WorkForm> results) {
+        StringBuilder csvBuilder = new StringBuilder();
+        // ヘッダ行(見出し)を追加
+        csvBuilder.append("日付,開始時間,終了時間,休憩\n");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat dtf = new SimpleDateFormat("HH:mm");
+        for (WorkForm work : results) {
+            csvBuilder.append(sdf.format(work.getDate()))
+                    .append(",")
+                    .append(dtf.format(work.getWorkStart()))
+                    .append(",")
+                    .append(dtf.format(work.getWorkEnd()))
+                    .append(",")
+                    .append(dtf.format(work.getRest()))
+                    .append("\n");
+        }
+        return csvBuilder.toString();
 
     public void stampWorkStart(AccountForm loginAccount) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
