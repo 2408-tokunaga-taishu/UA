@@ -7,6 +7,7 @@ import com.example.UA.repository.GroupRepository;
 import com.example.UA.repository.entity.Account;
 import com.example.UA.repository.entity.Group;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,7 +52,24 @@ public class AccountService {
     }
 
     /*
-     * アカウント管理画面で表示する全アカウント取得
+     * アカウント管理画面で表示するアカウント取得
+     */
+    public List<AccountForm> findAllAccountByLimit(Integer limit, Integer currentPage) {
+        int start = 0;
+        int end = 0;
+        if (currentPage == 1) {
+            end = limit * currentPage;
+            start = 1; // 1ページ目だけid=0スタートになってしまうのでid=1から取得したいため設定する
+        } else {
+            end = limit * currentPage;
+            start = end - limit + 1; //前ページの最大idが入ってしまうので+1して除外する
+        }
+        List<Account> results = accountRepository.findAllByOrderByIdBetween(start, end, limit);
+        List<AccountForm> accounts = setAccountForm(results);
+        return accounts;
+    }
+    /*
+     * 全アカウント取得
      */
     public List<AccountForm> findAllAccount() {
         List<Account> results = accountRepository.findAllByOrderById();

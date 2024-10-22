@@ -2,6 +2,7 @@ package com.example.UA.controller;
 
 import com.example.UA.controller.form.AccountForm;
 import com.example.UA.controller.form.GroupForm;
+import com.example.UA.repository.entity.Account;
 import com.example.UA.service.AccountService;
 import com.example.UA.utils.CipherUtil;
 import jakarta.servlet.http.HttpSession;
@@ -15,7 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AccountController {
@@ -24,6 +27,12 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
+
+    // 1ページの表示数
+    private final String limit = "3";
+
+    // ページネーションで表示するページ数
+    private int showPageSize = 3;
 
     /*
      * ログイン画面表示
@@ -94,13 +103,53 @@ public class AccountController {
      * アカウント管理画面表示
      */
     @GetMapping("/accountManage")
-    public ModelAndView accountManage() {
+    public ModelAndView accountManage(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
+        // paramsのvalueの値チェック
+        for (String value : params.values()) {
+            if(value.isBlank() || !value.matches("^[0-9]*$")) {
+                redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+                return new ModelAndView("redirect:/accountManage");
+            }
+        }
         ModelAndView mav = new ModelAndView();
-        List<AccountForm> accounts = accountService.findAllAccount();
         mav.setViewName("/accountManage");
-        mav.addObject("accounts", accounts);
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
         mav.addObject("loginAccount", loginAccount);
+
+        String currentPage = params.get("page");
+        // 最初のページだけcurrentPageの値がnullになるので値をセットしてあげる
+        if (currentPage == null) {
+            currentPage = "1";
+        }
+        HashMap<String, String> search = new HashMap<>(); //Mapだと抽象クラスなのでインスタンス化不可
+        search.put("limit", limit);
+        search.put("page", currentPage);
+
+        List<AccountForm> showAccounts = accountService.findAllAccountByLimit(Integer.parseInt(limit), Integer.parseInt(currentPage));
+        List<AccountForm> accounts = accountService.findAllAccount();
+        int total = accounts.size();
+        // ページネーション処理
+        // 総数/1ページの表示数 から総ページ数を割り出す
+        int totalPage = (total + Integer.parseInt(limit) -1)/ Integer.parseInt(limit);
+        // パラメータに入力された数値が総ページ数よりも大きい場合のエラー処理
+        for (String value : params.values()) {
+            if(Integer.parseInt(value) > totalPage) {
+                redirectAttributes.addFlashAttribute("errorMessages", "不正なパラメータです");
+                return new ModelAndView("redirect:/accountManage");
+            }
+        }
+        int page = Integer.parseInt(currentPage);
+        // 表示する最初のページ番号を算出
+        int startPage = page - (page - 1) % showPageSize;
+        // 表示する最後のページ番号を算出
+        int endPage = (startPage + showPageSize -1 > totalPage) ? totalPage : startPage + showPageSize -1;
+        mav.addObject("total", total);
+        mav.addObject("page", page);
+        mav.addObject("totalPage", totalPage);
+        mav.addObject("startPage", startPage);
+        mav.addObject("endPage", endPage);
+        mav.addObject("showAccounts", showAccounts);
+        mav.addObject("accounts", accounts);
         return mav;
     }
 
@@ -239,4 +288,5 @@ public class AccountController {
         }
         return mav;
     }
+
 }
