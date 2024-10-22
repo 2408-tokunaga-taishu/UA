@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,6 +50,13 @@ public class TopController {
         ModelAndView mav = new ModelAndView();
         List<WorkForm> works = workService.findAllWorks();
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+//        打刻済み勤怠の抽出
+        List<WorkForm> stampWork = works.stream().filter(work -> 1 == work.getStamp() && loginAccount.getId() == work.getAccountId())
+                .collect(Collectors.toList());
+        WorkForm stamp = new WorkForm();
+        if (!stampWork.isEmpty()) {
+            stamp =stampWork.get(0);
+        }
         //　アカウント管理画面表示フラグ
         boolean isShowAccountManage = false;
         if (loginAccount.getAdmin() == 1) {
@@ -81,6 +89,7 @@ public class TopController {
         mav.addObject("loginAccount", loginAccount);
         mav.addObject("isShowAccountManage", isShowAccountManage);
         mav.addObject("countDays", countDays);
+        mav.addObject("stamp", stamp);
         mav.setViewName("/top");
         session.removeAttribute("errorMessages");
         return mav;

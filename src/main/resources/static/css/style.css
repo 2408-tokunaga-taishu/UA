@@ -12,3 +12,7 @@
    top: 7px;
    left: -62px;
 }
+
+.border-thick {
+    border-width: 5px;
+}

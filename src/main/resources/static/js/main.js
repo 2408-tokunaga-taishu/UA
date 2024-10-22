@@ -47,3 +47,42 @@
            }
        });
     });
+
+  $( function() {
+      $('input[name="workStart-button"]').on('click',function(){
+           if (confirm("出勤時間を打刻しますか？")){
+              return true;
+           } else {
+               return false;
+           }
+       });
+    });
+
+  $( function() {
+        $('input[name="workEnd-button"]').on('click',function(){
+             if (confirm("退勤時間を打刻しますか？")){
+                return true;
+             } else {
+                 return false;
+             }
+         });
+      });
+
+  $( function() {
+          $('input[name="restStart-button"]').on('click',function(){
+               if (confirm("休憩開始時間を打刻しますか？")){
+                  return true;
+               } else {
+                   return false;
+               }
+           });
+        });
+  $( function() {
+            $('input[name="restEnd-button"]').on('click',function(){
+                 if (confirm("休憩終了時間を打刻しますか？")){
+                    return true;
+                 } else {
+                     return false;
+                 }
+             });
+          });

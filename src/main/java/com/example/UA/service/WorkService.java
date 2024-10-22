@@ -13,22 +13,18 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.hibernate.validator.internal.util.logging.formatter.DurationFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Member;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 import java.util.*;
-import java.util.Date;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -90,6 +86,10 @@ public class WorkService {
             workForm.setGroupId(work.getGroupId());
             workForm.setAccountId(work.getAccountId());
             workForm.setRemandText(work.getRemandText());
+            workForm.setStamp(work.getStamp());
+            workForm.setRestStamp(work.getRestStamp());
+            workForm.setRestStart(work.getRestStart());
+            workForm.setRestEnd(work.getRestEnd());
             works.add(workForm);
         }
         return works;
@@ -134,7 +134,9 @@ public class WorkService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         workForm.setStrDate(sdf.format(workForm.getDate()));
         workForm.setStrWorkStart(String.valueOf(workForm.getWorkStart()).substring(0,5));
-        workForm.setStrWorkEnd(String.valueOf(workForm.getWorkEnd()).substring(0,5));
+        if (workForm.getRestStart() != null) {
+            workForm.setStrWorkEnd(String.valueOf(workForm.getWorkEnd()).substring(0, 5));
+        }
         if (workForm.getRestStart() != null) {
             workForm.setStrRestStart(String.valueOf(workForm.getRestStart()).substring(0, 5));
         }
@@ -156,6 +158,7 @@ public class WorkService {
         workForm.setStatus(result.getStatus());
         workForm.setGroupId(result.getGroupId());
         workForm.setAccountId(result.getAccountId());
+        workForm.setStamp(result.getStamp());
         return workForm;
     }
 
@@ -280,9 +283,12 @@ public class WorkService {
         Duration workingTime = Duration.ZERO;
         for (int i = 0; i < works.size(); i++) {
             LocalTime startTime = works.get(i).getWorkStart().toLocalTime();
-            LocalTime endTime = works.get(i).getWorkEnd().toLocalTime();
             LocalTime restTime = works.get(i).getRest().toLocalTime();
-            Duration workDuration = Duration.between(startTime, endTime); // 開始時刻～終了時刻の時間算出
+            Duration workDuration = Duration.ZERO;
+            if(works.get(i).getWorkEnd() != null) {
+                LocalTime endTime = works.get(i).getWorkEnd().toLocalTime();
+                 workDuration = Duration.between(startTime, endTime); // 開始時刻～終了時刻の時間算出
+            }
             Duration restDuration = Duration.ofHours(restTime.getHour()).plusMinutes(restTime.getMinute());
             Duration dayWorkingTime = workDuration.minus(restDuration);
             workingTime = workingTime.plus(dayWorkingTime);
@@ -350,5 +356,41 @@ public class WorkService {
                     .append("\n");
         }
         return csvBuilder.toString();
+
+    public void stampWorkStart(AccountForm loginAccount) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Date nowDate = new Date();
+        Time workStart = Time.valueOf(sdf.format(new Date()) + ":00");
+        int groupId = loginAccount.getGroupId();
+        int accountId= loginAccount.getId();
+        Time rest = Time.valueOf("00:00:00");
+        workRepository.stampWorkStart(nowDate, workStart, groupId, accountId, rest);
+
+    }
+
+    public void stampWorkEnd(AccountForm loginAccount) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Time workEnd = Time.valueOf(sdf.format(new Date())+ ":00");
+        workRepository.stampWorkEnd(workEnd, new Date(), loginAccount.getId());
+    }
+    //  打刻ボタン休憩開始
+    public void stampRestStart(AccountForm loginAccount) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Time restStart = Time.valueOf(sdf.format(new Date())+ ":00");
+        workRepository.stampRestStart(restStart, new Date(), loginAccount.getId());
+    }
+
+//    打刻ボタン休憩終了
+    @Transactional
+    public void stampRestEnd(AccountForm loginAccount) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Time restEnd= Time.valueOf(sdf.format(new Date())+ ":00");
+        workRepository.stampRestEnd(restEnd, new Date(), loginAccount.getId());
+        Work stamp = workRepository.findbyStamp(loginAccount.getId());
+        LocalTime startTime = (stamp.getRestStart()).toLocalTime();
+        LocalTime endTime = stamp.getRestEnd().toLocalTime();
+        Duration duration = Duration.between(startTime, endTime);
+        Time rest = Time.valueOf(duration.toHoursPart() + ":" + duration.toMinutesPart() + ":00");
+        workRepository.calculateRest(rest, loginAccount.getId());
     }
 }

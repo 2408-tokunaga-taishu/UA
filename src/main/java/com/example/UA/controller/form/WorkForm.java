@@ -129,4 +129,8 @@ public class WorkForm {
 
     private String remandText;
 
+    private int stamp;
+
+    private int restStamp;
+
 }

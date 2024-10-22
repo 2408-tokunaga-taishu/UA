@@ -57,6 +57,12 @@ public class Work {
     @Column(name = "remand_text", insertable = false, updatable = false)
     private String remandText;
 
+    @Column(name = "stamping", insertable = false, updatable = false)
+    private int stamp;
+
+    @Column(name = "rest_stamping", insertable = false, updatable = false)
+    private int restStamp;
+
     @ManyToOne
     @JoinColumn(name = "account_id", insertable = false, updatable = false)
     private Account account;

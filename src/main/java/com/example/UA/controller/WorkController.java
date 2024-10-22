@@ -136,4 +136,41 @@ public class WorkController {
         mav.setViewName("redirect:/approval");
         return mav;
     }
+//    打刻ボタン勤怠開始時間登録
+    @PostMapping("/stampWorkStart")
+    public ModelAndView stampWorkStart() {
+        ModelAndView mav = new ModelAndView();
+        AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        workService.stampWorkStart(loginAccount);
+        mav.setViewName("redirect:/");
+        return mav;
+    }
+//    打刻ボタン勤怠終了登録
+    @PutMapping("/stampWorkEnd")
+    public ModelAndView stampWorkEnd() {
+        AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        ModelAndView mav = new ModelAndView();
+        workService.stampWorkEnd(loginAccount);
+        mav.setViewName("redirect:/");
+        return mav;
+    }
+//  打刻ボタン休憩開始
+    @PutMapping("/stampRestStart")
+    public ModelAndView stampRestStart() {
+        AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        ModelAndView mav = new ModelAndView();
+        workService.stampRestStart(loginAccount);
+        mav.setViewName("redirect:/");
+        return mav;
+    }
+//    打刻ボタン休憩終了
+    @PutMapping("/stampRestEnd")
+    public ModelAndView stampRestEnd() {
+        AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        ModelAndView mav = new ModelAndView();
+        workService.stampRestEnd(loginAccount);
+        mav.setViewName("redirect:/");
+        return mav;
 }
+}
+
