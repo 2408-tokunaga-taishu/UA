@@ -40,7 +40,7 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
     void remand(@Param("id") int id, @Param("Date") Date date, @Param("remandText") String remandText);
 
     // 個人別の勤怠集計
-    @Query("SELECT w FROM Work w WHERE w.accountId = :accountId AND w.date BETWEEN :start AND :end")
+    @Query("SELECT w FROM Work w WHERE w.accountId = :accountId AND w.date BETWEEN :start AND :end ORDER BY w.date")
     List<Work> findWorksByAccountId(@Param("accountId") int id, @Param("start") Date start, @Param("end") Date end);
 //    打刻ボタン出勤
     @Modifying

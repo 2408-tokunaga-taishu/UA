@@ -65,6 +65,8 @@ public class TopController {
         // 当月の出勤日数算出(streamAPI)
         long countDays = works.stream()
                 .filter(work -> work.getAccountId().equals(loginAccount.getId()))
+                .map(work -> work.getDate()) // 勤怠の日付を取得
+                .distinct() // 同じ日付はカウントしないようにする
                 .count();
         // 当月の労働時間算出
         List<WorkForm> personalWorks = workService.findWorksByAccountId(loginAccount.getId());
