@@ -57,21 +57,25 @@
             <div class="d-grid gap-2">
                 <div class="d-flex gap-4">
                     <form th:action="@{/stampWorkStart}" method="post">
-                        <input class="btn btn-success btn-lg " aria-distabled=”true” name="workStart-button" type="submit" value="出勤"
+                        <input class="btn btn-success btn-lg " aria-distabled=”true” name="workStart-button"
+                               type="submit" value="出勤"
                                th:disabled="${stamp.workStart != null}">
                     </form>
                     <form th:action="@{/stampWorkEnd}" th:method="put">
-                        <input class="btn btn-success btn-lg " aria-distabled=”true” name="workEnd-button" type="submit" value="退勤"
+                        <input class="btn btn-success btn-lg " aria-distabled=”true” name="workEnd-button" type="submit"
+                               value="退勤"
                                th:disabled="${stamp.workStart == null || stamp.restStamp ==1 }">
                     </form>
                 </div>
                 <div class="d-flex gap-3">
                     <form th:action="@{/stampRestStart}" th:method="put">
-                        <input class="btn btn-success btn-lg" name="restStart-button" type="submit" value="休憩開始" aria-distabled=”true”
+                        <input class="btn btn-success btn-lg" name="restStart-button" type="submit" value="休憩開始"
+                               aria-distabled=”true”
                                th:disabled="${stamp.workStart == null || stamp.restStamp ==1 || stamp.restStamp ==2}">
                     </form>
                     <form th:action="@{/stampRestEnd}" th:method="put">
-                        <input class="btn btn-success btn-lg" name="restEnd-button" type="submit" value="休憩終了" aria-distabled=”true”
+                        <input class="btn btn-success btn-lg" name="restEnd-button" type="submit" value="休憩終了"
+                               aria-distabled=”true”
                                th:disabled="${stamp.workStart == null || stamp.restStamp == 0 || stamp.restStamp ==2}">
                     </form>
                 </div>
@@ -111,6 +115,8 @@
                 </table>
             </div>
         </div>
+
+
         <div class="d-flex justify-content-between pb-3">
             <div class="left-elements d-flex">
                 <form th:method="post" th:action="@{/previousMonth}">
@@ -124,6 +130,63 @@
             </div>
             <div class="d-flex">
                 <div class="mx-2 h3" th:text="${loginAccount.name} + 'さん'"/>
+            </div>
+            <div class="right-elements d-flex ml-auto">
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">勤怠操作ログ
+                </button>
+                <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+                     id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">勤怠操作ログ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <div th:each="work : ${works}">
+                            <div class="card">
+                                <div class="card-header">[[${#dates.format(work.date, 'yyyy/MM/dd')}]]</div>
+                                <table class="table table-sm">
+                                    <div th:each="log : ${work.workLogs}">
+                                        <tr>
+                                            <td>
+                                                <div th:if="${log.content == 1}">
+                                                    <p>出勤しました</p>
+                                                </div>
+                                                <div th:if="${log.content == 2}">
+                                                    <p>退勤しました</p>
+                                                </div>
+                                                <div th:if="${log.content == 3}">
+                                                    <p>休憩開始しました</p>
+                                                </div>
+                                                <div th:if="${log.content == 4}">
+                                                    <p>休憩終了しました</p>
+                                                </div>
+                                                <div th:if="${log.content == 5}">
+                                                    <p>手動打刻しました</p>
+                                                </div>
+                                                <div th:if="${log.content == 6}">
+                                                    <p>勤怠を編集しました</p>
+                                                </div>
+                                                <div th:if="${log.content == 7}">
+                                                    <p>勤怠を申請しました</p>
+                                                </div>
+                                                <div th:if="${log.content == 8}">
+                                                    <p>勤怠が承認されました</p>
+                                                </div>
+                                                <div th:if="${log.content == 9}">
+                                                    <p>勤怠が差し戻しされました</p>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p th:text="${#dates.format(log.createdDate, 'yyyy/MM/dd HH:mm')}"/>
+                                            </td>
+                                        </tr>
+                                    </div>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="right-elements d-flex ml-auto">
                 <div th:if="${loginAccount.superVisor == 1}">

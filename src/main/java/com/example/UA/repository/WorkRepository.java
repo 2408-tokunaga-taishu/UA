@@ -49,7 +49,7 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
 
 //    打刻ボタン退勤
     @Modifying
-    @Query("UPDATE Work  SET workEnd = :workEnd, updatedDate = :Date, stamp = 0 WHERE stamp = 1 AND accountId =:id")
+    @Query("UPDATE Work  SET workEnd = :workEnd, updatedDate = :Date, stamp = 0 WHERE stamp = 1 AND accountId =:id ")
     void stampWorkEnd(@Param("workEnd") Time workEnd, @Param("Date") Date updateDate, @Param("id") int id);
 
     //  打刻ボタン休憩開始
@@ -67,4 +67,7 @@ public interface WorkRepository extends JpaRepository<Work, Integer> {
 
     @Query("SELECT w FROM Work w WHERE stamp = 1 AND accountId =:id")
     Work findbyStamp(@Param("id") int id);
+
+
+    Work findFirstByOrderByUpdatedDateDesc();
 }

@@ -3,6 +3,7 @@ package com.example.UA.controller.form;
 
 import com.example.UA.Validation.CheckBlank;
 import com.example.UA.repository.entity.Account;
+import com.example.UA.repository.entity.WorkLog;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -15,7 +16,9 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
@@ -66,7 +69,7 @@ public class WorkForm {
             LocalTime startTime = LocalTime.parse(strRestStart, DateTimeFormatter.ofPattern("HH:mm"));
             LocalTime endTime = LocalTime.parse(strRestEnd, DateTimeFormatter.ofPattern("HH:mm"));
             Duration duration = Duration.between(startTime, endTime);
-            return duration.getSeconds() > 0;
+            return duration.getSeconds() >= 0;
         }
     }
 
@@ -132,5 +135,7 @@ public class WorkForm {
     private int stamp;
 
     private int restStamp;
+
+    private  List<WorkLog> workLogs = new ArrayList<>();
 
 }

@@ -3,8 +3,10 @@ package com.example.UA.service;
 import com.example.UA.controller.form.AccountForm;
 import com.example.UA.controller.form.AccountWorkForm;
 import com.example.UA.controller.form.WorkForm;
+import com.example.UA.repository.WorkLogRepository;
 import com.example.UA.repository.WorkRepository;
 import com.example.UA.repository.entity.Work;
+import com.example.UA.repository.entity.WorkLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,9 @@ import java.util.stream.Collectors;
 public class WorkService {
     @Autowired
     WorkRepository workRepository;
+
+    @Autowired
+    WorkLogRepository workLogRepository;
     // 日付の操作で各メソッドで使用するのでここに記述
     private LocalDate displayMonth = LocalDate.now();
 
@@ -82,11 +87,12 @@ public class WorkService {
             workForm.setRestStamp(work.getRestStamp());
             workForm.setRestStart(work.getRestStart());
             workForm.setRestEnd(work.getRestEnd());
+            workForm.setWorkLogs(work.getWorkLogs());
             works.add(workForm);
         }
         return works;
     }
-
+    @Transactional
     public void saveWork(WorkForm workForm, AccountForm account) throws ParseException {
 //　　　　変換メソッドを用いてString型をそれぞれ変換
         convertWorkForm(workForm);
@@ -96,6 +102,8 @@ public class WorkService {
 
         Work work = setWork(workForm);
         workRepository.save(work);
+        Work find = workRepository.findFirstByOrderByUpdatedDateDesc();
+        workLogRepository.manualWork(find.getId());
     }
 
     private Work setWork(WorkForm workForm) {
@@ -126,7 +134,7 @@ public class WorkService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         workForm.setStrDate(sdf.format(workForm.getDate()));
         workForm.setStrWorkStart(String.valueOf(workForm.getWorkStart()).substring(0,5));
-        if (workForm.getRestStart() != null) {
+        if (workForm.getWorkEnd() != null) {
             workForm.setStrWorkEnd(String.valueOf(workForm.getWorkEnd()).substring(0, 5));
         }
         if (workForm.getRestStart() != null) {
@@ -178,21 +186,28 @@ public class WorkService {
         workForm.setDate(sdf.parse(workForm.getStrDate()));
     }
 
+    @Transactional
     public void editWork(WorkForm workForm) throws ParseException {
         convertWorkForm(workForm);
 //        更新日時取得
         workForm.setUpdatedDate(new Date());
         Work work = setWork(workForm);
         workRepository.save(work);
+        Work find = workRepository.findFirstByOrderByUpdatedDateDesc();
+        workLogRepository.workEditLog(find.getId());
     }
 //        申請status変更
+    @Transactional
     public void saveStatus(int id) {
         Date Date = new Date();
         workRepository.saveStatus(id, Date);
+        workLogRepository.requestWork(id);
     }
 //        勤怠削除処理
+    @Transactional
     public void deleteWork(int id) {
         workRepository.deleteById(id);
+        workLogRepository.deleteByWorkId(id);
     }
 //        申請済みの同グループの勤怠数取得
     public int findGroupWorkCount(Integer groupId) throws ParseException {
@@ -261,14 +276,18 @@ public class WorkService {
         return accountWorkForms;
     }
 //      勤怠の承認処理
+    @Transactional
     public void approval(int id) {
         Date Date = new Date();
         workRepository.approval(id, Date);
+        workLogRepository.approvalWork(id);
     }
 
+    @Transactional
     public void remand(int id, String remandText) {
         Date Date = new Date();
         workRepository.remand(id, Date, remandText);
+        workLogRepository.remandWork(id);
     }
 
     public String calculateWorkingTime(List<WorkForm> works) {
@@ -320,7 +339,7 @@ public class WorkService {
         String totalRestTime = String.format("%02d:%02d", hours, minutes);
         return totalRestTime;
     }
-
+    @Transactional
     public void stampWorkStart(AccountForm loginAccount) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date nowDate = new Date();
@@ -329,19 +348,27 @@ public class WorkService {
         int accountId= loginAccount.getId();
         Time rest = Time.valueOf("00:00:00");
         workRepository.stampWorkStart(nowDate, workStart, groupId, accountId, rest);
+        Work work = workRepository.findbyStamp(accountId);
+        workLogRepository.workStartLog(work.getId());
 
     }
 
+    @Transactional
     public void stampWorkEnd(AccountForm loginAccount) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Time workEnd = Time.valueOf(sdf.format(new Date())+ ":00");
         workRepository.stampWorkEnd(workEnd, new Date(), loginAccount.getId());
+        Work work = workRepository.findFirstByOrderByUpdatedDateDesc();
+        workLogRepository.workEndLog(work.getId());
     }
     //  打刻ボタン休憩開始
+    @Transactional
     public void stampRestStart(AccountForm loginAccount) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Time restStart = Time.valueOf(sdf.format(new Date())+ ":00");
         workRepository.stampRestStart(restStart, new Date(), loginAccount.getId());
+        Work work = workRepository.findbyStamp(loginAccount.getId());
+        workLogRepository.restStartLog(work.getId());
     }
 
 //    打刻ボタン休憩終了
@@ -356,5 +383,7 @@ public class WorkService {
         Duration duration = Duration.between(startTime, endTime);
         Time rest = Time.valueOf(duration.toHoursPart() + ":" + duration.toMinutesPart() + ":00");
         workRepository.calculateRest(rest, loginAccount.getId());
+        Work work = workRepository.findFirstByOrderByUpdatedDateDesc();
+        workLogRepository.restEndLog(work.getId());
     }
 }

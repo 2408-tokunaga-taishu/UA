@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "works")
@@ -67,4 +69,7 @@ public class Work {
     @JoinColumn(name = "account_id", insertable = false, updatable = false)
     private Account account;
 
+    @OneToMany
+    @JoinColumn(name = "work_id" , insertable = false, updatable = false)
+    private List<WorkLog> workLogs = new ArrayList<>();
 }
