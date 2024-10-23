@@ -38,6 +38,7 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.12.0' //StringUtilsで使用
 	implementation('org.webjars:jquery:3.5.1')
 	implementation('org.webjars:webjars-locator:0.40')
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
 }
 
 tasks.named('test') {

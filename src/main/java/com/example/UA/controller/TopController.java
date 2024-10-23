@@ -2,24 +2,29 @@ package com.example.UA.controller;
 
 import com.example.UA.controller.form.AccountForm;
 import com.example.UA.controller.form.AccountWorkForm;
+import com.example.UA.controller.form.WorkCSVForm;
 import com.example.UA.controller.form.WorkForm;
 import com.example.UA.service.AccountService;
 import com.example.UA.service.WorkService;
 import com.example.UA.utils.CipherUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.awt.*;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +65,8 @@ public class TopController {
         // 当月の出勤日数算出(streamAPI)
         long countDays = works.stream()
                 .filter(work -> work.getAccountId().equals(loginAccount.getId()))
+                .map(work -> work.getDate()) // 勤怠の日付を取得
+                .distinct() // 同じ日付はカウントしないようにする
                 .count();
         // 当月の労働時間算出
         List<WorkForm> personalWorks = workService.findWorksByAccountId(loginAccount.getId());
@@ -202,5 +209,24 @@ public class TopController {
         mav.addObject("accountWorkForms",accountWorkForms);
 
         return mav;
+    }
+
+    /*
+     * csvファイルDL
+     */
+    @PostMapping(value = "/download/csv", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public ResponseEntity<byte[]> downloadCsv() throws IOException, ParseException {
+        AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
+        int id = loginAccount.getId();
+        String csvData = workService.findCSVWorksByAccountId(id);
+
+        byte[] csvBytes = csvData.getBytes(StandardCharsets.UTF_8);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("sample.csv").build());
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 }
