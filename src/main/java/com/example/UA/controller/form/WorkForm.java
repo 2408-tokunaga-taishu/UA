@@ -6,6 +6,7 @@ import com.example.UA.repository.entity.Account;
 import com.example.UA.repository.entity.WorkLog;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -118,6 +119,7 @@ public class WorkForm {
 
     private String strRestEnd;
 
+    @Size(max = 100, message = "メモは100文字以内で入力してください")
     private String memo;
 
     private Integer status;

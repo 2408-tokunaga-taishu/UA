@@ -171,6 +171,6 @@ public class WorkController {
         workService.stampRestEnd(loginAccount);
         mav.setViewName("redirect:/");
         return mav;
-}
+    }
 }
 

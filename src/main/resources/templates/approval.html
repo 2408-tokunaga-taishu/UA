@@ -38,7 +38,9 @@
                                         <div th:text="${#dates.format(work.rest, 'HH:mm')}"></div>
                                     </td>
                                     <td>
-                                        <div th:text="${work.memo}"></div>
+                                        <div class="text-break" style="width: 6rem;">
+                                            <div th:text="${work.memo}"></div>
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="d-flex">
@@ -61,12 +63,11 @@
                                                             <div class="modal-body">
                                                                     <div class="mb-3">
                                                                         <label for="remandText" class="col-form-label">差し戻し理由:</label>
-                                                                        <input type="text" class="form-control" id="remandText" name="remandText">
+                                                                        <input type="text" class="form-control" id="remandText" name="remandText" maxlength="100">
                                                                     </div>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-
                                                                     <input class="btn btn-outline-primary btn-block" name="remand-button"
                                                                            type="submit" value="確定">
                                                             </div>

@@ -25,7 +25,7 @@
             <tr>
                 <div class="work-form">
                     <div class="d-flex">
-                        <form th:action="@{/addWork}" th:object="${workForm}" method="post">
+                        <form class="mb-3" th:action="@{/addWork}" th:object="${workForm}" method="post">
                             <td>
                                 <div class="form-group">
                                     <input type="date" id="strDate" th:field="*{strDate}">

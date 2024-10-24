@@ -248,7 +248,9 @@
                         <div th:text="${#dates.format(work.rest, 'HH:mm')}"></div>
                     </td>
                     <td>
-                        <div th:text="${work.memo}"></div>
+                        <div class="text-break" style="width: 6rem;">
+                             <div th:text="${work.memo}"></div>
+                        </div>
                     </td>
                     <td>
                         <div th:if="${work.status == 0 || work.status == 3}">
@@ -287,8 +289,11 @@
                         </div>
                     </td>
                     <div th:if="${work.remandText}">
+                            <th>差し戻し理由:</th>
                         <td>
-                            <p th:text="${work.remandText}"></p>
+                            <div class="text-break" style="width: 6rem;">
+                                <p th:text="${work.remandText}"></p>
+                            </div>
                         </td>
                     </div>
                     </tr>
