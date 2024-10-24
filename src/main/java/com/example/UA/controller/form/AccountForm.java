@@ -22,11 +22,11 @@ public class AccountForm {
 
     private int id;
 
-    @CheckBlank(message = "アカウントを入力してください", groups = {login.class, newAccount.class, editAccount.class})
+    @CheckBlank(message = "アカウント名を入力してください", groups = {login.class, newAccount.class, editAccount.class})
     @Unique(groups = {newAccount.class})
     private String account;
 
-    @AssertTrue(message = "アカウントは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class, editAccount.class})
+    @AssertTrue(message = "アカウント名は半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class, editAccount.class})
     private boolean isAccountValid() {
         if (account.isBlank()) {
             return true; //アカウント名が空の場合は@CheckBlankでまずバリデーションするため処理を抜ける
@@ -36,15 +36,21 @@ public class AccountForm {
         }
     }
 
-    @CheckBlank(message = "パスワードを入力してください", groups = {login.class, newAccount.class, settingPassword.class})
+    @CheckBlank(message = "パスワードを入力してください", groups = {login.class, newAccount.class})
     private String password;
 
-    @CheckBlank(message = "パスワード(確認用)を入力してください", groups = {settingPassword.class, newAccount.class})
+    @CheckBlank(message = "パスワード(確認用)を入力してください", groups = {newAccount.class})
     private String passCheck;
 
     private String oldPassword;
 
-    @AssertTrue(message = "パスワードは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class, settingPassword.class})
+    @CheckBlank(message = "新しいパスワードを入力してください", groups = {settingPassword.class})
+    private String newPassword;
+
+    @CheckBlank(message = "新しいパスワード(確認用)を入力してください", groups = {settingPassword.class})
+    private String newPassCheck;
+
+    @AssertTrue(message = "パスワードは半角文字かつ6文字以上20文字以下で入力してください", groups = {newAccount.class})
     private boolean isPasswordValid() {
         if (password.isBlank()) {
             return true; //パスワードが空の場合は@CheckBlankでまずバリデーションするため処理を抜ける
@@ -54,12 +60,31 @@ public class AccountForm {
         }
     }
 
-    @AssertTrue(message = "パスワードと確認用パスワードが一致しません", groups = {newAccount.class, settingPassword.class})
+    @AssertTrue(message = "新しいパスワードは半角文字かつ6文字以上20文字以下で入力してください", groups = {settingPassword.class})
+    private boolean isNewPasswordValid() {
+        if (newPassword.isBlank()) {
+            return true; //パスワードが空の場合は@CheckBlankでまずバリデーションするため処理を抜ける
+        } else {
+            // 以下の条件を満たしていない場合はエラーメッセージを表示する
+            return (newPassword.length() >= 6 && newPassword.length() <= 20 && newPassword.matches("^[\\x20-\\x7E]+$"));
+        }
+    }
+
+    @AssertTrue(message = "パスワードと確認用パスワードが一致しません", groups = {newAccount.class})
     private boolean isSamePassword() {
-        if (password.isBlank() || passCheck.isBlank()) {
+        if (password.isBlank()) {
             return true;
         } else {
             return Objects.equals(password, passCheck);
+        }
+    }
+
+    @AssertTrue(message = "新しいパスワードと新しいパスワード(確認用)が一致しません", groups = {settingPassword.class})
+    private boolean isSameNewPassword() {
+        if (newPassCheck.isBlank()) {
+            return true;
+        } else {
+            return Objects.equals(newPassword, newPassCheck);
         }
     }
 

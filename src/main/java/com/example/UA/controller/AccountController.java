@@ -57,32 +57,43 @@ public class AccountController {
     public ModelAndView login(@ModelAttribute("accountForm") @Validated({AccountForm.login.class}) AccountForm accountForm,
                               BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
+        List<String> errorMessages = new ArrayList<>();
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("/login");
-        }
-        // パスワードを暗号化
-        String encPassword = CipherUtil.encrypt(accountForm.getPassword());
-        // 暗号化した物をuserFormにセット
-        accountForm.setPassword(encPassword);
-        // try文の中と処理後にもuserDataオブジェクトを使用できるように先に作成
-        AccountForm accountData;
-        try {
-            accountData = accountService.selectAccount(accountForm);
-            // もしユーザが停止している場合,もしくはユーザ情報が存在しない場合
-            if (accountData.getIsStopped() == 1) {
-                // 例外を投げてcatchで処理をする
-                throw new Exception("ログインに失敗しました");
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                errorMessages.add(error.getDefaultMessage());
             }
-        } catch (Exception e) {
-            // 設定したメッセージを取得しerrorMessageとしてhtmlに渡す
-            mav.addObject("errorMessage", e.getMessage());
+        }
+        if (errorMessages.size() > 0) {
+            mav.addObject("errorMessages", errorMessages);
+            mav.addObject("accountForm", accountForm);
             mav.setViewName("/login");
+        } else {
+            // パスワードを暗号化
+            String encPassword = CipherUtil.encrypt(accountForm.getPassword());
+            // 暗号化した物をuserFormにセット
+            accountForm.setPassword(encPassword);
+            // try文の中と処理後にもuserDataオブジェクトを使用できるように先に作成
+            AccountForm accountData;
+            try {
+                accountData = accountService.selectAccount(accountForm);
+                // もしユーザが停止している場合,もしくはユーザ情報が存在しない場合
+                if (accountData.getIsStopped() == 1) {
+                    // 例外を投げてcatchで処理をする
+                    throw new Exception("ログインに失敗しました");
+                }
+            } catch (Exception e) {
+                // 設定したメッセージを取得しerrorMessageとしてhtmlに渡す
+                errorMessages.add(e.getMessage());
+                mav.addObject("errorMessages", errorMessages);
+                mav.setViewName("/login");
+                return mav;
+            }
+            // セッションに値をセット
+            session.setAttribute("loginAccount", accountData);
+            // topにリダイレクト
+            mav.setViewName("redirect:/");
             return mav;
         }
-        // セッションに値をセット
-        session.setAttribute("loginAccount", accountData);
-        // topにリダイレクト
-        mav.setViewName("redirect:/");
         return mav;
     }
 
@@ -94,7 +105,7 @@ public class AccountController {
         ModelAndView mav = new ModelAndView();
         session.removeAttribute("loginAccount");
         AccountForm accountForm = new AccountForm();
-        mav.setViewName("/login");
+        mav.setViewName("redirect:/login");
         mav.addObject("accountForm", accountForm);
         return mav;
     }
