@@ -217,16 +217,23 @@ public class TopController {
     @PostMapping(value = "/download/csv", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<byte[]> downloadCsv() throws IOException, ParseException {
+        // CSVに乗せる情報を取得
         AccountForm loginAccount = (AccountForm)session.getAttribute("loginAccount");
         int id = loginAccount.getId();
         String csvData = workService.findCSVWorksByAccountId(id);
 
+        // CSVをバイト配列に変換
         byte[] csvBytes = csvData.getBytes(StandardCharsets.UTF_8);
 
+        // ヘッダーの設定
         HttpHeaders headers = new HttpHeaders();
+        // 以下はファイルのダウンロード時のファイル名を指定するために使う。attachmentはファイルをダウンロードさせるための指定
         headers.setContentDisposition(ContentDisposition.builder("attachment").filename("sample.csv").build());
+        // 以下の行でレスポンスのタイプをバイナリデータとして指定している。
+        // この行によってブラウザはファイルをダウンロードとして認識する。
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
+        // レスポンスを返す
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 }

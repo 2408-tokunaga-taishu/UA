@@ -107,7 +107,7 @@
                     <a class="page-link" th:href="@{'/accountManage?page=' + ${page + 1}}">次へ</a>
                 </li>
                 <li th:if="${endPage} < ${totalPage}" class="page-item">
-                    <a class="page-link" th:href="@{'/accountManage=' + ${totalPage}}">最後</a>
+                    <a class="page-link" th:href="@{'/accountManage?page=' + ${totalPage}}">最後</a>
                 </li>
             </ul>
         </nav>
