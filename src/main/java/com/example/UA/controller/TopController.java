@@ -160,7 +160,7 @@ public class TopController {
      */
     @PutMapping("/settingPassword/{id}")
     public ModelAndView settingPassword(@PathVariable int id, @Validated({AccountForm.settingPassword.class}) AccountForm accountForm,
-                                        BindingResult result) {
+                                        BindingResult result, RedirectAttributes redirectAttributes) {
         ModelAndView mav = new ModelAndView();
         List<String> errorMessages = new ArrayList<>();
         // 現在のパスワードが正しいかチェック
@@ -186,8 +186,9 @@ public class TopController {
         if (errorMessages.isEmpty()) {
             AccountForm editAccount = accountService.findAccount(id);
             // パスワード暗号化
-            editAccount.setPassword(CipherUtil.encrypt(accountForm.getPassword()));
+            editAccount.setPassword(CipherUtil.encrypt(accountForm.getNewPassword()));
             accountService.saveAccount(editAccount);
+            redirectAttributes.addFlashAttribute("successMessage", "パスワードの変更が完了しました。");
             mav.setViewName("redirect:/");
 
         }
