@@ -22,6 +22,9 @@
             <li th:text="${passErrorMessages}" class="text-danger"/>
             <br/>
         </div>
+        <div class="successMessage" th:if="${successMessage != null}">
+            <li th:text="${successMessage}" class="text-success"/>
+        </div>
         <div class="notice">
             <div th:if="${remand > 0}">
                 <li>[[${remand}]]件の差し戻しの勤怠があります</li>
